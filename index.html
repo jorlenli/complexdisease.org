@@ -1,0 +1,672 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Laboratory of Complex Diseases, UCSF. Single-cell atlases, personal genomes and machine learning to see disease before it shows.">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Li Lab UCSF</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: full-bleed illustrated bands; San Francisco landmarks redrawn as genomes, neurons and networks. */
+:root{
+  --bg:#f6f9ff; --surface:#ffffff; --fg:#0e1b3a; --muted:#56648a; --line:#dde5f5;
+  --orange:#f4532a; --blue:#1f6fe8; --sky:#8ed6ff; --gold:#ffc53d; --mint:#2fd4a3; --coral:#ff6b8f; --violet:#8b5cf6;
+  --fog:#ffffff; --water:#bfe3ff; --hill:#d9f2e6; --tower:#f4532a;
+  --display:'Syne',system-ui,sans-serif; --body:'Manrope',system-ui,sans-serif;
+  --shadow:0 18px 50px rgba(14,27,58,.10);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0a1230; --surface:#121c42; --fg:#eef3ff; --muted:#a6b3d6; --line:#243160;
+  --fog:#2a3a78; --water:#16307a; --hill:#143a4c; --tower:#ff6a3d; --shadow:0 18px 50px rgba(0,0,0,.4); color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0a1230; --surface:#121c42; --fg:#eef3ff; --muted:#a6b3d6; --line:#243160;
+  --fog:#2a3a78; --water:#16307a; --hill:#143a4c; --tower:#ff6a3d; --shadow:0 18px 50px rgba(0,0,0,.4); color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0;overflow-x:clip;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+img,svg{max-width:100%}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.05}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.eyebrow{font-family:var(--display);font-weight:700;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
+.lede{color:var(--muted);max-width:40ch;font-size:1.05rem}
+
+/* nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;backdrop-filter:blur(14px);background:color-mix(in srgb,var(--bg) 78%,transparent);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:12px}
+.brand{white-space:nowrap;display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:800;font-size:1.1rem;text-decoration:none;letter-spacing:-.01em}
+.brand .dot{width:28px;height:28px;border-radius:50%;background:conic-gradient(from 200deg,var(--orange),var(--gold),var(--mint),var(--blue),var(--orange))}
+.links{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.links a{text-decoration:none;font-weight:600;font-size:.9rem;padding:8px 12px;border-radius:999px;color:var(--muted)}
+.links a:hover,.links a:focus-visible{background:var(--surface);color:var(--fg);outline:none;box-shadow:0 0 0 2px var(--line)}
+
+/* hero */
+.hero{position:relative;overflow:hidden;background:linear-gradient(180deg,#dff2ff 0%,#fff3e6 55%,var(--bg) 100%)}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .hero{background:linear-gradient(180deg,#0f1f55 0%,#2a1a44 60%,var(--bg) 100%)} }
+:root[data-theme="dark"] .hero{background:linear-gradient(180deg,#0f1f55 0%,#2a1a44 60%,var(--bg) 100%)}
+.hero svg{display:block;width:100%;height:auto}
+.hero-copy{position:relative;z-index:1}
+.hero-copy .wrap{padding-top:clamp(40px,7vw,96px);padding-bottom:8px}
+.hero svg{margin-top:-4vw}
+.hero h1{font-size:clamp(2rem,8.5vw,6.2rem);font-weight:800;letter-spacing:-.03em;line-height:.95}
+.hero h1 span{display:block}
+.hero h1 .b{color:var(--orange)}
+.hero p{margin:14px 0 0;max-width:34ch;font-weight:500;font-size:clamp(.95rem,1.6vw,1.2rem);color:var(--muted)}
+.hero .cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.btn{display:inline-block;text-decoration:none;font-weight:700;font-family:var(--display);padding:12px 20px;border-radius:999px;background:var(--fg);color:var(--bg);font-size:.95rem}
+.btn.alt{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 2px var(--fg)}
+
+/* sections */
+section{padding-block:clamp(56px,8vw,110px)}
+.sec-head{display:flex;flex-direction:column;gap:10px;margin-bottom:36px}
+.sec-head h2{font-size:clamp(2rem,4.5vw,3.4rem);font-weight:800;letter-spacing:-.02em}
+
+/* research cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px}
+.card{background:var(--surface);border-radius:28px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;min-width:0;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.card:hover{transform:translateY(-6px)}
+.card .art{aspect-ratio:400/260;max-width:100%;display:block}
+.card .art svg{display:block;width:100%;height:100%}
+.card .body{padding:18px 22px 22px;display:flex;flex-direction:column;gap:6px}
+.card h3{font-size:1.35rem;font-weight:800;letter-spacing:-.01em}
+.card p{margin:0;color:var(--muted);font-size:.95rem}
+.card .where{font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.tagrow{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.pill{font-family:var(--display);font-weight:700;font-size:.72rem;padding:4px 10px;border-radius:999px;background:var(--bg);border:1px solid var(--line)}
+
+/* spotlight */
+.spot{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.spot a{text-decoration:none;display:flex;flex-direction:column;gap:10px;padding:24px;border-radius:24px;color:#fff;min-height:220px;min-width:0;position:relative;overflow:hidden}
+.spot a::after{content:"";position:absolute;inset:auto -40px -60px auto;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.18)}
+.spot .j{font-family:var(--display);font-weight:800;font-size:2rem;letter-spacing:-.02em;line-height:1}
+.spot .y{font-weight:700;opacity:.85}
+.spot .t{margin-top:auto;font-weight:600;font-size:.95rem;line-height:1.35}
+.spot a:nth-child(1){background:linear-gradient(135deg,#f4532a,#ff8a5b)}
+.spot a:nth-child(2){background:linear-gradient(135deg,#1f6fe8,#4fb8ff)}
+.spot a:nth-child(3){background:linear-gradient(135deg,#8b5cf6,#ff6b8f)}
+.spot a:nth-child(4){background:linear-gradient(135deg,#0ea47a,#2fd4a3)}
+
+/* publications */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.filters button{font:inherit;font-weight:700;font-size:.85rem;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.filters button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.pubs{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.pub{display:grid;grid-template-columns:78px 1fr;gap:14px;align-items:start;padding:14px 16px;border-radius:18px;background:var(--surface);border:1px solid var(--line);min-width:0}
+.pub .yr{font-family:var(--display);font-weight:800;font-size:1.05rem;padding-top:2px;color:var(--muted);font-variant-numeric:tabular-nums}
+.pub .ti{font-weight:700;line-height:1.3}
+.pub .ti a{text-decoration:none}
+.pub .ti a:hover{text-decoration:underline}
+.pub .au{color:var(--muted);font-size:.86rem;margin-top:4px;line-height:1.45}
+.pub .au sup{font-size:.7em;color:var(--orange);font-weight:800;line-height:0}
+.pub .au b.me-li{color:var(--fg);font-weight:800;background:color-mix(in srgb,var(--gold) 35%,transparent);border-radius:4px;padding:0 3px}
+.pub .me{color:var(--muted);font-size:.88rem;margin-top:3px}
+.pub .me b{color:var(--fg);font-weight:700}
+.legend{color:var(--muted);font-size:.85rem;margin:-8px 0 18px;display:flex;gap:16px;flex-wrap:wrap}
+.legend sup{color:var(--orange);font-weight:800}
+.pub .dots{display:flex;gap:4px;margin-top:6px}
+.pub .dots i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.more{margin-top:18px;text-align:center}
+.count{color:var(--muted);font-size:.9rem}
+
+/* people */
+.people{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px}
+.person{background:var(--surface);border-radius:24px;padding:20px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;border:1px solid var(--line);min-width:0}
+.person.pi{grid-column:1/-1;flex-direction:row;text-align:left;align-items:center;gap:26px;padding:28px}
+.person.pi .ava{width:150px;height:150px;font-size:2.6rem;flex:none}
+.ava{width:112px;height:112px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:1.9rem;color:#fff;letter-spacing:-.02em;flex:none;padding:4px}
+.ava img{width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:50% 18%;display:block;background:var(--surface)}
+.person h3{font-size:1.1rem;font-weight:800}
+.person .role{font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
+.person p{margin:0;color:var(--muted);font-size:.9rem}
+@media (max-width:640px){ .person.pi{flex-direction:column;text-align:center} }
+
+/* join */
+.join{background:var(--fg);color:var(--bg);border-radius:32px;padding:clamp(28px,5vw,56px);display:grid;grid-template-columns:1.2fr 1fr;gap:32px;align-items:center}
+.join h2{font-size:clamp(1.8rem,4vw,3rem);font-weight:800;letter-spacing:-.02em}
+.join p{color:color-mix(in srgb,var(--bg) 75%,transparent)}
+.join .roles{display:grid;gap:12px}
+.join .role{border:1px solid color-mix(in srgb,var(--bg) 25%,transparent);border-radius:18px;padding:16px 18px}
+.join .role b{font-family:var(--display);display:block;font-size:1.05rem}
+.join code{font-family:var(--body);font-weight:700;background:color-mix(in srgb,var(--bg) 15%,transparent);padding:4px 10px;border-radius:8px;user-select:all}
+@media (max-width:760px){ .join{grid-template-columns:1fr} }
+
+/* press */
+.press{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.press a{text-decoration:none;padding:18px 20px;border-radius:18px;background:var(--surface);border:1px solid var(--line);display:flex;flex-direction:column;gap:4px;min-width:0}
+.press a:hover{border-color:var(--orange)}
+.press .o{font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--orange)}
+.press .h{font-weight:700;line-height:1.3}
+
+footer{border-top:1px solid var(--line);padding-block:40px;color:var(--muted);font-size:.9rem}
+footer .wrap{display:flex;flex-wrap:wrap;gap:24px;justify-content:space-between;align-items:flex-start}
+footer .ext{display:flex;gap:14px;flex-wrap:wrap}
+footer a{text-decoration:none}
+footer a:hover{text-decoration:underline}
+
+/* motion */
+.fog{animation:drift 26s linear infinite alternate}
+.fog2{animation:drift 38s linear infinite alternate-reverse}
+@keyframes drift{from{transform:translateX(-60px)}to{transform:translateX(60px)}}
+.rung{animation:glow 4s ease-in-out infinite}
+@keyframes glow{0%,100%{opacity:.55}50%{opacity:1}}
+.pulse{animation:pulse 2.6s linear infinite}
+@keyframes pulse{0%{offset-distance:0%}100%{offset-distance:100%}}
+@media (prefers-reduced-motion:reduce){ .fog,.fog2,.rung,.pulse{animation:none} .card{transition:none} }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top"><span class="dot"></span>Li Lab · UCSF</a>
+    <nav class="links">
+      <a href="#research">Research</a>
+      <a href="#publications">Publications</a>
+      <a href="#people">People</a>
+      <a href="#join">Join</a>
+      <a href="#press">Press</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <div class="hero-copy">
+      <div class="wrap">
+        <div class="eyebrow">Laboratory of Complex Diseases</div>
+        <h1><span>From Big Data</span><span class="b">to Big Mind</span></h1>
+        <p>Single-cell atlases, personal genomes and machine learning, built to see disease before it shows.</p>
+        <div class="cta"><a class="btn" href="#research">Explore the science</a><a class="btn alt" href="#join">Join us</a></div>
+      </div>
+    </div>
+    <svg id="hero-svg" viewBox="0 0 1200 560" role="img" aria-label="The Golden Gate Bridge drawn with its main cables as a DNA double helix"></svg>
+  </div>
+
+  <section id="research">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Research</div>
+        <h2>Six questions, one city.</h2>
+        <p class="lede">Each theme is a San Francisco landmark rebuilt from the molecules we study.</p>
+      </div>
+      <div class="grid">
+
+        <article class="card">
+          <div class="art"><svg id="art-brain" viewBox="0 0 400 260" role="img" aria-label="Sutro Tower drawn as a neuron"></svg></div>
+          <div class="body">
+            <div class="where">Sutro Tower · neuron</div>
+            <h3>Developing Brain</h3>
+            <p>Single-cell transcriptome, epigenome and proteome atlases of the human cortex.</p>
+            <div class="tagrow"><span class="pill">Nature 2025</span><span class="pill">Nat Biotech 2026</span><span class="pill">Nature 2023</span></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="art"><svg id="art-preg" viewBox="0 0 400 260" role="img" aria-label="Palace of Fine Arts rotunda holding an embryo"></svg></div>
+          <div class="body">
+            <div class="where">Palace of Fine Arts · embryo</div>
+            <h3>Pregnancy &amp; Preterm Birth</h3>
+            <p>The maternal–fetal interface, cell by cell, and the druggable genome of prematurity.</p>
+            <div class="tagrow"><span class="pill">Nature 2026</span><span class="pill">Sci Adv 2024</span><span class="pill">AJHG 2018</span></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="art"><svg id="art-ai" viewBox="0 0 400 260" role="img" aria-label="Transamerica Pyramid drawn as a neural network"></svg></div>
+          <div class="body">
+            <div class="where">Transamerica Pyramid · neural net</div>
+            <h3>AI for Genomes</h3>
+            <p>Deep learning that reads personal genomes, noncoding mutations and gene–environment interplay.</p>
+            <div class="tagrow"><span class="pill">Cell 2019</span><span class="pill">Cancer Res 2020</span><span class="pill">iScience 2021</span></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="art"><svg id="art-heart" viewBox="0 0 400 260" role="img" aria-label="Bay Bridge with its cable drawn as an ECG trace"></svg></div>
+          <div class="body">
+            <div class="where">Bay Bridge · ECG</div>
+            <h3>Heart &amp; Vessels</h3>
+            <p>Genomics of aortic aneurysm and the protein networks behind congenital heart disease.</p>
+            <div class="tagrow"><span class="pill">Cell 2018</span><span class="pill">Cell Systems 2022</span></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="art"><svg id="art-cancer" viewBox="0 0 400 260" role="img" aria-label="Lombard Street drawn as a chromosome"></svg></div>
+          <div class="body">
+            <div class="where">Lombard Street · chromosome</div>
+            <h3>Cancer Genomics</h3>
+            <p>Prostate cancer at single-cell resolution, from germline architecture to allele-specific expression.</p>
+            <div class="tagrow"><span class="pill">PLOS Genet 2025</span><span class="pill">Mol Cancer Res 2026</span></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="art"><svg id="art-evo" viewBox="0 0 400 260" role="img" aria-label="Twin Peaks with a phylogenetic tree growing over the hills"></svg></div>
+          <div class="body">
+            <div class="where">Twin Peaks · phylogeny</div>
+            <h3>Human Evolution</h3>
+            <p>Where disease variants came from: natural selection, local adaptation and their trade-offs.</p>
+            <div class="tagrow"><span class="pill">AJHG 2018</span><span class="pill">PLoS Genet 2012</span><span class="pill">Trends Genet 2013</span></div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="spotlight" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Spotlight</div>
+        <h2>Recent landmarks.</h2>
+      </div>
+      <div class="spot">
+        <a href="https://www.ucsf.edu/news/2026/04/431736/can-pregnancy-risks-be-telegraphed-cellular-mom-baby-link" target="_blank" rel="noopener"><span class="j">Nature</span><span class="y">2026</span><span class="t">Single-cell spatiotemporal dissection of the human maternal–fetal interface</span></a>
+        <a href="https://cell.ucsf.edu/snMultiome/" target="_blank" rel="noopener"><span class="j">Nature</span><span class="y">2025</span><span class="t">Molecular and cellular dynamics of the developing human neocortex at single-cell resolution</span></a>
+        <a href="#publications"><span class="j">Nat Biotech</span><span class="y">2026</span><span class="t">Single-cell proteomic landscape of the developing human brain</span></a>
+        <a href="https://www.ucsf.edu/news/2024/01/426976/genetic-discovery-reveals-who-can-benefit-preterm-birth-therapy" target="_blank" rel="noopener"><span class="j">Sci Adv</span><span class="y">2024</span><span class="t">Noncoding mutations identify the druggable genome in preterm birth</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section id="publications" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Publications</div>
+        <h2>Papers.</h2>
+      </div>
+      <div class="filters" id="filters" role="group" aria-label="Filter publications by theme"></div>
+      <div class="legend"><span><sup>*</sup> equal contribution</span><span><sup>#</sup> corresponding author</span><span><b style="color:var(--fg)">Li, J.</b> highlighted</span></div>
+      <ol class="pubs" id="pubs"></ol>
+      <div class="more"><button class="btn" id="more-btn" type="button">Show all papers</button> <span class="count" id="count"></span></div>
+    </div>
+  </section>
+
+  <section id="people">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">People</div>
+        <h2>The lab.</h2>
+      </div>
+      <div class="people" id="people-grid"></div>
+    </div>
+  </section>
+
+  <section id="join" style="padding-top:0">
+    <div class="wrap">
+      <div class="join">
+        <div>
+          <div class="eyebrow" style="color:var(--gold)">Open positions</div>
+          <h2>Build the next atlas with us.</h2>
+          <p>Postdocs and graduate students in computational and experimental biology. Mentorship in genomic medicine, single-cell biology and precision health, with collaborators across UCSF and Stanford.</p>
+          <p>Send a CV, a short note on your interests, and three references to <code>jingjing.li@ucsf.edu</code></p>
+        </div>
+        <div class="roles">
+          <div class="role"><b>Computational Biology</b>Genome analysis, machine learning and AI, or digital signal processing.</div>
+          <div class="role"><b>Experimental Biology</b>Multi-omics profiling; single-cell experience preferred.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="press" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Press</div>
+        <h2>In the news.</h2>
+      </div>
+      <div class="press" id="press-grid"></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <b style="color:var(--fg)">Laboratory of Complex Diseases</b><br>
+      Eli and Edythe Broad Center of Regeneration Medicine and Stem Cell Research<br>
+      University of California, San Francisco<br>
+      35 Medical Center Way, RMB 934H, San Francisco, CA 94143 · 415-502-2572
+    </div>
+    <div class="ext">
+      <a href="https://cell.ucsf.edu/snMultiome/" target="_blank" rel="noopener">Developing Brain Cell Browser</a>
+      <a href="https://neurology.ucsf.edu/" target="_blank" rel="noopener">UCSF Neurology</a>
+      <a href="https://stemcell.ucsf.edu/" target="_blank" rel="noopener">UCSF Regeneration Medicine</a>
+      <a href="https://www.ucsf.edu/" target="_blank" rel="noopener">UCSF</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+const NS='http://www.w3.org/2000/svg';
+const el=(n,a,parent)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);if(parent)parent.appendChild(e);return e};
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+
+/* ---------- HERO: Golden Gate as DNA ---------- */
+function hero(){
+  const s=document.getElementById('hero-svg'); s.innerHTML='';
+  const defs=el('defs',{},s);
+  const sky=el('linearGradient',{id:'gSky',x1:0,y1:0,x2:0,y2:1},defs);
+  el('stop',{offset:0,'stop-color':'#9fdcff','stop-opacity':.0},sky);
+  el('stop',{offset:1,'stop-color':'#ffd9b0','stop-opacity':.35},sky);
+  const wat=el('linearGradient',{id:'gWater',x1:0,y1:0,x2:0,y2:1},defs);
+  el('stop',{offset:0,'stop-color':css('--water')},wat);
+  el('stop',{offset:1,'stop-color':css('--bg')},wat);
+  const blur=el('filter',{id:'blur',x:'-20%',y:'-50%',width:'140%',height:'200%'},defs);
+  el('feGaussianBlur',{stdDeviation:22},blur);
+
+  el('rect',{x:0,y:0,width:1200,height:560,fill:'url(#gSky)'},s);
+  el('circle',{cx:1010,cy:120,r:58,fill:css('--gold'),opacity:.9},s);
+  // headlands
+  el('path',{d:'M0,330 C80,290 150,300 220,320 C260,332 300,340 330,345 L330,560 L0,560 Z',fill:css('--hill')},s);
+  el('path',{d:'M870,345 C930,330 980,300 1050,290 C1110,282 1160,300 1200,320 L1200,560 L870,560 Z',fill:css('--hill'),opacity:.85},s);
+  // water
+  el('rect',{x:0,y:400,width:1200,height:160,fill:'url(#gWater)'},s);
+  for(let i=0;i<14;i++){ el('path',{d:`M${40+i*86},${428+(i%3)*28} q22,-6 44,0 t44,0`,fill:'none',stroke:'#fff',opacity:.5,'stroke-width':2},s); }
+
+  const T1=330,T2=870,TOP=110,DECK=345,A1=[40,330],A2=[1160,330];
+  // cable centerline: catenary approximations as quadratic beziers
+  const cab=p=>{ // returns y of main cable at x
+    if(p<T1){const t=(p-A1[0])/(T1-A1[0]);return A1[1]+(TOP-A1[1])*t*t;}
+    if(p>T2){const t=(p-T2)/(A2[0]-T2);return TOP+(A2[1]-TOP)*(1-(1-t)*(1-t));}
+    const t=(p-T1)/(T2-T1); return TOP+ (310-TOP)*4*t*(1-t)*0.78;
+  };
+  // deck
+  el('rect',{x:0,y:DECK,width:1200,height:14,fill:css('--tower')},s);
+  el('rect',{x:0,y:DECK+14,width:1200,height:4,fill:'#b93b1c',opacity:.6},s);
+  // suspenders
+  for(let x=60;x<=1150;x+=26){ el('line',{x1:x,y1:cab(x),x2:x,y2:DECK,stroke:css('--tower'),'stroke-width':1.4,opacity:.55},s); }
+  // towers
+  [T1,T2].forEach(tx=>{
+    el('rect',{x:tx-22,y:TOP-40,width:12,height:DECK+60-(TOP-40),fill:css('--tower')},s);
+    el('rect',{x:tx+10,y:TOP-40,width:12,height:DECK+60-(TOP-40),fill:css('--tower')},s);
+    [TOP-30,TOP+30,TOP+110,TOP+190].forEach(y=>el('rect',{x:tx-22,y:y,width:44,height:14,fill:css('--tower')},s));
+    el('path',{d:`M${tx-22},${TOP+44} L${tx+22},${TOP+110} M${tx+22},${TOP+44} L${tx-22},${TOP+110} M${tx-22},${TOP+124} L${tx+22},${TOP+190} M${tx+22},${TOP+124} L${tx-22},${TOP+190}`,stroke:css('--tower'),'stroke-width':3,fill:'none'},s);
+  });
+  // DNA strands along the cable
+  const amp=24,k=2*Math.PI/150;
+  let dA='',dB='';
+  for(let x=A1[0];x<=A2[0];x+=4){
+    const y=cab(x),o=Math.sin(x*k)*amp;
+    dA+=(x===A1[0]?'M':'L')+x+','+(y+o)+' ';
+    dB+=(x===A1[0]?'M':'L')+x+','+(y-o)+' ';
+  }
+  const base=[css('--blue'),css('--mint'),css('--gold'),css('--coral')];
+  for(let x=A1[0]+8;x<A2[0];x+=18){
+    const y=cab(x),o=Math.sin(x*k)*amp; if(Math.abs(o)<3)continue;
+    const c=base[Math.floor(x/18)%4], c2=base[(Math.floor(x/18)+2)%4];
+    const g=el('g',{class:'rung',style:`animation-delay:${(x/A2[0])*4}s`},s);
+    el('line',{x1:x,y1:y+o,x2:x,y2:y,stroke:c,'stroke-width':4,'stroke-linecap':'round'},g);
+    el('line',{x1:x,y1:y,x2:x,y2:y-o,stroke:c2,'stroke-width':4,'stroke-linecap':'round'},g);
+  }
+  el('path',{d:dA,fill:'none',stroke:css('--tower'),'stroke-width':6,'stroke-linecap':'round'},s);
+  el('path',{d:dB,fill:'none',stroke:css('--tower'),'stroke-width':6,'stroke-linecap':'round',opacity:.85},s);
+  // fog
+  const fog=el('g',{class:'fog'},s);
+  [[150,392,220,28],[520,398,300,30],[940,386,240,26]].forEach(f=>el('ellipse',{cx:f[0],cy:f[1],rx:f[2],ry:f[3],fill:css('--fog'),opacity:.75,filter:'url(#blur)'},fog));
+  const fog2=el('g',{class:'fog2'},s);
+  [[330,300,180,22],[780,296,220,24]].forEach(f=>el('ellipse',{cx:f[0],cy:f[1],rx:f[2],ry:f[3],fill:css('--fog'),opacity:.55,filter:'url(#blur)'},fog2));
+}
+
+/* ---------- Sutro Tower as neuron ---------- */
+function brain(){
+  const s=document.getElementById('art-brain'); s.innerHTML='';
+  el('rect',{x:0,y:0,width:400,height:260,fill:css('--sky'),opacity:.35},s);
+  el('path',{d:'M0,235 C90,170 160,200 230,215 C300,228 350,200 400,215 L400,260 L0,260 Z',fill:css('--hill')},s);
+  const t=css('--tower');
+  // legs (axon)
+  el('path',{d:'M165,240 L188,125 M235,240 L212,125 M200,240 L200,125',stroke:t,'stroke-width':5,fill:'none','stroke-linecap':'round'},s);
+  el('path',{d:'M172,205 L228,205 M180,165 L220,165',stroke:t,'stroke-width':3,fill:'none'},s);
+  // prongs (dendrites)
+  el('path',{d:'M188,125 L128,22 M200,125 L200,14 M212,125 L272,22',stroke:t,'stroke-width':6,fill:'none','stroke-linecap':'round'},s);
+  el('path',{d:'M148,60 L252,60 M138,90 L262,90 M170,40 L230,40',stroke:t,'stroke-width':3,fill:'none'},s);
+  // dendritic branches
+  const br=[[128,22,100,10],[128,22,112,0],[272,22,300,10],[272,22,288,0],[200,14,186,2],[200,14,214,2],[138,90,110,80],[262,90,290,80],[148,60,124,48],[252,60,276,48]];
+  br.forEach(b=>el('line',{x1:b[0],y1:b[1],x2:b[2],y2:b[3],stroke:t,'stroke-width':2.5,'stroke-linecap':'round'},s));
+  const cols=[css('--mint'),css('--gold'),css('--coral'),css('--blue')];
+  br.forEach((b,i)=>el('circle',{cx:b[2],cy:b[3],r:5,fill:cols[i%4]},s));
+  // soma glow
+  el('circle',{cx:200,cy:125,r:16,fill:css('--gold')},s);
+  el('circle',{cx:200,cy:125,r:7,fill:'#fff',opacity:.9},s);
+  // signal pulses along axon
+  [0,1.3].forEach(d=>el('circle',{r:4,fill:css('--blue'),class:'pulse',style:`offset-path:path('M200,125 L200,240');animation-delay:${d}s`},s));
+  // synapse sparks
+  [[82,150],[320,150],[60,120],[340,118]].forEach((p,i)=>{ el('circle',{cx:p[0],cy:p[1],r:3,fill:cols[(i+1)%4]},s); });
+}
+
+/* ---------- Palace of Fine Arts with embryo ---------- */
+function preg(){
+  const s=document.getElementById('art-preg'); s.innerHTML='';
+  el('rect',{x:0,y:0,width:400,height:260,fill:'#ffe9d6',opacity:.6},s);
+  el('rect',{x:0,y:200,width:400,height:60,fill:css('--water')},s);
+  const stone=css('--tower');
+  // dome
+  el('path',{d:'M110,122 A90,78 0 0 1 290,122 Z',fill:stone,opacity:.95},s);
+  el('path',{d:'M126,122 A74,64 0 0 1 274,122 Z',fill:'#fff',opacity:.18},s);
+  el('rect',{x:98,y:122,width:204,height:12,rx:3,fill:stone},s);
+  // columns
+  for(let i=0;i<7;i++){ const x=106+i*31; el('rect',{x:x,y:134,width:10,height:62,rx:2,fill:stone},s); el('rect',{x:x-3,y:134,width:16,height:6,rx:1,fill:stone},s); }
+  el('rect',{x:94,y:196,width:212,height:6,fill:stone},s);
+  // embryo inside dome: trophoblast ring + inner cell mass
+  const cx=200,cy=96;
+  el('circle',{cx,cy,r:40,fill:'#fff',opacity:.25},s);
+  for(let i=0;i<14;i++){ const a=i/14*Math.PI*2; el('circle',{cx:cx+Math.cos(a)*36,cy:cy+Math.sin(a)*36,r:6,fill:i%2?css('--coral'):css('--gold')},s); }
+  [[0,0],[-12,-8],[12,-8],[0,-16],[-10,8],[10,8],[0,14]].forEach((p,i)=>el('circle',{cx:cx+p[0],cy:cy+p[1],r:8,fill:i?css('--blue'):css('--mint')},s));
+  // reflection
+  const r=el('g',{transform:'translate(0,400) scale(1,-1)',opacity:.22},s);
+  el('path',{d:'M110,122 A90,78 0 0 1 290,122 Z',fill:stone},r);
+  for(let i=0;i<7;i++){ el('rect',{x:106+i*31,y:134,width:10,height:62,fill:stone},r); }
+  el('path',{d:'M20,222 q20,-5 40,0 t40,0 M300,232 q20,-5 40,0 t40,0',stroke:'#fff',fill:'none','stroke-width':2,opacity:.7},s);
+}
+
+/* ---------- Transamerica as neural net ---------- */
+function ai(){
+  const s=document.getElementById('art-ai'); s.innerHTML='';
+  el('rect',{x:0,y:0,width:400,height:260,fill:css('--violet'),opacity:.12},s);
+  el('path',{d:'M0,250 L400,250',stroke:css('--line'),'stroke-width':2},s);
+  // skyline hints
+  [[20,180,40],[70,200,30],[320,190,36],[360,210,28]].forEach(b=>el('rect',{x:b[0],y:b[1],width:b[2],height:250-b[1],fill:css('--line'),opacity:.8},s));
+  // pyramid outline
+  el('path',{d:'M200,14 L132,250 L268,250 Z',fill:css('--surface'),stroke:css('--blue'),'stroke-width':3},s);
+  // wings
+  el('rect',{x:176,y:120,width:9,height:130,fill:css('--blue'),opacity:.35},s);
+  el('rect',{x:215,y:120,width:9,height:130,fill:css('--blue'),opacity:.35},s);
+  // layers
+  const layers=[[200,52,1],[200,95,2],[200,138,3],[200,181,4],[200,224,5]];
+  const pts=layers.map(([cx,y,n])=>{ const half=(y-14)/(250-14)*68; return Array.from({length:n},(_,i)=>[n===1?cx:cx-half+ (i/(n-1))*2*half, y]); });
+  const cols=[css('--orange'),css('--gold'),css('--mint'),css('--blue'),css('--violet')];
+  for(let l=0;l<pts.length-1;l++) pts[l].forEach(a=>pts[l+1].forEach(b=>el('line',{x1:a[0],y1:a[1],x2:b[0],y2:b[1],stroke:css('--blue'),'stroke-width':1.2,opacity:.45},s)));
+  pts.forEach((layer,l)=>layer.forEach(p=>{ el('circle',{cx:p[0],cy:p[1],r:7,fill:cols[l]},s); el('circle',{cx:p[0],cy:p[1],r:2.5,fill:'#fff'},s); }));
+  // antenna
+  el('line',{x1:200,y1:14,x2:200,y2:0,stroke:css('--orange'),'stroke-width':3},s);
+  // input genome glyphs on the ground
+  'ACGTGCA'.split('').forEach((b,i)=>el('text',{x:60+i*40,y:38,'font-family':'Syne,sans-serif','font-weight':800,'font-size':14,fill:css('--muted'),opacity:.5},s).textContent=b);
+}
+
+/* ---------- Bay Bridge as ECG ---------- */
+function heart(){
+  const s=document.getElementById('art-heart'); s.innerHTML='';
+  el('rect',{x:0,y:0,width:400,height:260,fill:'#0f1f55'},s);
+  for(let i=0;i<30;i++) el('circle',{cx:(i*53)%400,cy:(i*37)%120,r:1.2,fill:'#fff',opacity:.5},s);
+  el('rect',{x:0,y:190,width:400,height:70,fill:'#16307a'},s);
+  const B='#cfe3ff';
+  // deck
+  el('rect',{x:0,y:168,width:400,height:8,fill:B},s);
+  // towers
+  [100,300].forEach(tx=>{ el('rect',{x:tx-14,y:48,width:8,height:150,fill:B},s); el('rect',{x:tx+6,y:48,width:8,height:150,fill:B},s); [60,110,150].forEach(y=>el('rect',{x:tx-14,y:y,width:28,height:7,fill:B},s)); });
+  // cable: side spans + ECG between towers
+  let d='M12,160 Q60,70 100,52 ';
+  const beat=(x0)=>{ // one PQRST beat over 90px
+    return `L${x0},110 Q${x0+8},98 ${x0+16},110 L${x0+26},110 L${x0+30},120 L${x0+36},40 L${x0+42},140 L${x0+46},110 L${x0+58},110 Q${x0+68},92 ${x0+78},110 L${x0+90},110 `;
+  };
+  d+='L120,110 '+beat(120)+' L210,110 '+beat(210)+' L300,52 Q340,70 388,160';
+  const path=el('path',{d,fill:'none',stroke:css('--coral'),'stroke-width':4,'stroke-linejoin':'round','stroke-linecap':'round'},s);
+  // suspenders
+  for(let x=20;x<=380;x+=16){ if(Math.abs(x-100)<16||Math.abs(x-300)<16) continue; el('line',{x1:x,y1:168,x2:x,y2:120,stroke:B,'stroke-width':1,opacity:.35},s); }
+  // bay lights on the cable
+  const L=path.getTotalLength?path.getTotalLength():0;
+  if(L){ for(let i=0;i<40;i++){ const p=path.getPointAtLength(L*i/39); el('circle',{cx:p.x,cy:p.y,r:2.2,fill:'#fff',opacity:.9},s); } }
+  // reflection
+  el('path',{d:'M12,160 Q60,250 100,268 M300,268 Q340,250 388,160',fill:'none',stroke:B,'stroke-width':2,opacity:.2},s);
+  el('path',{d:'M110,205 q10,-4 20,0 t20,0 M250,215 q10,-4 20,0 t20,0',stroke:'#fff',fill:'none','stroke-width':1.5,opacity:.4},s);
+}
+
+/* ---------- Lombard Street as chromosome ---------- */
+function cancer(){
+  const s=document.getElementById('art-cancer'); s.innerHTML='';
+  el('rect',{x:0,y:0,width:400,height:260,fill:css('--mint'),opacity:.16},s);
+  // hillside
+  el('path',{d:'M0,0 L400,0 L400,260 L0,260 Z',fill:css('--hill'),opacity:.5},s);
+  const road='M40,28 L300,28 Q346,28 346,62 Q346,96 300,96 L100,96 Q54,96 54,130 Q54,164 100,164 L300,164 Q346,164 346,198 Q346,232 300,232 L40,232';
+  el('path',{d:road,fill:'none',stroke:'#b5432a','stroke-width':30,'stroke-linecap':'round','stroke-linejoin':'round'},s);
+  el('path',{d:road,fill:'none',stroke:'#fff','stroke-width':2,'stroke-dasharray':'8 10',opacity:.7},s);
+  // nucleosome beads on straights
+  const beads=[];
+  for(let x=70;x<=280;x+=42){ beads.push([x,28],[x+20,96],[x,164],[x+20,232]); }
+  beads.forEach((b,i)=>{ el('circle',{cx:b[0],cy:b[1],r:9,fill:[css('--gold'),css('--blue'),css('--mint'),css('--coral')][i%4]},s); el('circle',{cx:b[0],cy:b[1],r:3,fill:'#fff',opacity:.8},s); });
+  // hydrangea bushes on the curves
+  const fl=[[372,48],[372,76],[28,116],[28,144],[372,184],[372,212],[15,40],[15,250]];
+  fl.forEach((f,i)=>{ for(let j=0;j<5;j++){ const a=j/5*Math.PI*2; el('circle',{cx:f[0]+Math.cos(a)*6,cy:f[1]+Math.sin(a)*6,r:4.5,fill:i%2?css('--coral'):css('--violet'),opacity:.9},s);} });
+  // mutation flags
+  [[160,28],[240,164]].forEach(p=>{ el('line',{x1:p[0]+22,y1:p[1]-4,x2:p[0]+22,y2:p[1]-30,stroke:css('--fg'),'stroke-width':2},s); el('path',{d:`M${p[0]+22},${p[1]-30} l16,6 l-16,6 z`,fill:css('--orange')},s); });
+}
+
+/* ---------- Twin Peaks phylogeny ---------- */
+function evo(){
+  const s=document.getElementById('art-evo'); s.innerHTML='';
+  const g=el('linearGradient',{id:'gEvo',x1:0,y1:0,x2:0,y2:1},el('defs',{},s));
+  el('stop',{offset:0,'stop-color':css('--gold'),'stop-opacity':.35},g); el('stop',{offset:1,'stop-color':css('--sky'),'stop-opacity':.25},g);
+  el('rect',{x:0,y:0,width:400,height:260,fill:'url(#gEvo)'},s);
+  el('circle',{cx:330,cy:60,r:26,fill:css('--gold')},s);
+  el('path',{d:'M0,260 L0,200 C60,120 120,110 170,170 C200,130 250,120 300,170 C340,130 380,150 400,190 L400,260 Z',fill:css('--hill')},s);
+  el('path',{d:'M0,260 L0,225 C80,170 140,190 200,215 C260,185 330,185 400,230 L400,260 Z',fill:css('--mint'),opacity:.45},s);
+  // tree: root in the valley, branches to tips
+  const tree='M170,230 L170,150 M170,150 L120,100 M170,150 L220,100 M120,100 L90,55 M120,100 L140,50 M220,100 L205,50 M220,100 L265,55 M265,55 L250,22 M265,55 L295,25 M90,55 L75,22 M90,55 L105,22';
+  el('path',{d:tree,fill:'none',stroke:css('--fg'),'stroke-width':3,'stroke-linecap':'round'},s);
+  const tips=[[75,22],[105,22],[140,50],[205,50],[250,22],[295,25]];
+  const cols=[css('--orange'),css('--blue'),css('--mint'),css('--coral'),css('--violet'),css('--gold')];
+  tips.forEach((p,i)=>{ el('circle',{cx:p[0],cy:p[1],r:9,fill:cols[i]},s); el('circle',{cx:p[0],cy:p[1],r:3,fill:'#fff',opacity:.9},s); });
+  // selected allele marker on one branch
+  el('circle',{cx:234,cy:36,r:6,fill:css('--gold'),stroke:css('--fg'),'stroke-width':2},s);
+  // tiny Sutro silhouette on the peak
+  el('path',{d:'M58,200 L62,150 M70,200 L66,150 M62,150 L52,118 M66,150 L76,118 M64,150 L64,112',stroke:css('--tower'),'stroke-width':2.5,fill:'none','stroke-linecap':'round'},s);
+}
+
+/* ---------- Publications ---------- */
+const THEMES={brain:['Developing Brain','--mint'],pregnancy:['Pregnancy','--coral'],cancer:['Cancer','--violet'],heart:['Heart','--orange'],ai:['AI for Genomes','--blue'],evolution:['Evolution','--gold'],genome:['Genome Science','--sky']};
+const P=[
+ [2026,'Nature','Single-cell spatiotemporal dissection of the human maternal–fetal interface','Wang, C.*, Zhou, Y.*, Wang, Y.J.*, Guha, T.K., Luo, Z., Mustafaraj, A., McIntyre, T.I., Schwab, M.E., Davidson, B.R., Reeder, G.C., Wong, R.J., England, S.K., Gonzalez, J.M., Blelloch, R., Combes, A.J., Giudice, L.C., Erlebacher, A., MacKenzie, T.C., Stevenson, D.K., Shaw, G.M., Snyder, M.P., Sun, X., Winn, V.D., Fisher, S.J.#, Li, J.#',['pregnancy'],'https://www.nature.com/articles/d41586-026-01037-2','653:167-179'],
+ [2026,'Nature Biotechnology','Single-cell proteomic landscape of the developing human brain','Wu, T.*, Jiang, L.*, Mukhtar, T., Wang, L., Jian, R., Wang, C., Trinh, T., Kriegstein, A.R.#, Snyder, M.#, Li, J.#',['brain']],
+ [2026,'Molecular Cancer Research','Landscape of allele-specific expression in prostate cancer reveals recurrent, stage-specific events in AR signaling and resistance pathways','Tsui, M., Hu, K., Song, H., Hsu, S.C., Chen, Y.-A., Nuniz, L., Pham, J.H., Chang, C.-H., Hui, K.S.F., Quigley, D.A., Li, J., Huang, F.W.#',['cancer']],
+ [2025,'PLOS Genetics','Decoding the germline genetic architecture of prostate cancer at a single cell resolution','Wang, C., Tang, T., Wang, Y.J., Li, J.#',['cancer'],null,'21(12): e1011975'],
+ [2025,'Cell Reports Methods','Anticlustering for sample allocation to minimize batch effects','Papenberg, M., Wang, C., Diop, M., Bukhari, S.H., Oskotsky, B., Davidson, B.R., Vo, K.C., Liu, B., Irwin, J.C., Combes, A.J., Gaudilliere, B., Li, J., Stevenson, D.K., Klau, G.W., Giudice, L.C., Sirota, M., Oskotsky, T.T.',['ai'],null,'5(8):101137'],
+ [2025,'Nature Communications','α7 nicotinic acetylcholine receptors regulate radial glia fate in the developing human cortex','Mukhtar, T., Siebert, C.V., Wang, Y., Pebworth, M.-P., White, M.L., Wu, T., Huang, T.I., Zuo, G., Ross, J., Baltazar, J., Upadhyay, V., Shankar, M., Zhou, L., Lombardi-Coronel, I., Mandala, I., Adam, M.A., Wang, S., Bi, Q., Hoekman, M.F.M., Li, J., Kriegstein, A.R.',['brain'],null,'16:5925'],
+ [2025,'Nature','Molecular and cellular dynamics of the developing human neocortex at single-cell resolution','Wang, L.*, Wang, C.*, Moriano, J.A., Chen, S., Zhang, S., Mukhtar, T., Wang, S., Cebrián-Silla, A., Bi, Q., Augustin, J.A., Oliveira, L.G., Song, M., Ge, X., Paredes, M., Huang, E.J., Alvarez-Buylla, A., Duan, X., Li, J.#, Kriegstein, A.#',['brain'],'https://cell.ucsf.edu/snMultiome/'],
+ [2024,'Science Advances','Integrative analysis of noncoding mutations identifies the druggable genome in preterm birth','Wang, C., Wang, Y.J., Ying, L., Wong, R.J., Quaintance, C.C., Hong, X., Neff, N., Wang, X., Biggio, J.R., Mesiano, S., Quake, S.R., Alvira, C.M., Cornfield, D.N., Stevenson, D.K., Shaw, G.M., Li, J.#',['pregnancy','ai'],'https://www.ucsf.edu/news/2024/01/426976/genetic-discovery-reveals-who-can-benefit-preterm-birth-therapy','10(3)'],
+ [2023,'Nature','A cross-species proteomic map of synapse development reveals neoteny during human postsynaptic density maturation','Wang, L., Pang, K., Zhou, L., Cebrián-Silla, A., González-Granero, S., Wang, S., Bi, Q., White, M.L., Ho, B., Li, J., Li, T., Perez, Y., Huang, E.J., Winkler, E.A., Paredes, M.F., Kovner, R., Sestan, N., Pollen, A.A., Liu, P., Li, J., Piao, X., Verdugo, J.M.G., Alvarez-Buylla, A., Liu, Z., Kriegstein, A.R.',['brain','evolution'],null,'622(7981):112-119'],
+ [2022,'Cell Systems','Systems analysis of de novo mutations in congenital heart diseases identified a protein network in hypoplastic left heart syndrome','Wang, Y.J., Zhang, X., Lam, C.K., Guo, H., Wang, C., Zhang, S., Wu, J.C., Snyder, M.#, Li, J.#',['heart'],null,'13:1-16'],
+ [2022,'American Journal of Medical Genetics (A)','Exome sequencing identifies genetic variants in anophthalmia and microphthalmia','Li, J.*#, Yang, W.*, Wang, Y.*, …, Shaw, G.M.#, and the National Birth Defects Prevention Study',['genome'],null,'188(8):2376-2388'],
+ [2022,'Neuron','Genome-wide identification of the genetic basis of amyotrophic lateral sclerosis','Zhang, S., Cooper-Knock, J., et al.',['brain']],
+ [2021,'iScience','A panoramic view of proteomics and multiomics in precision health','Zilocchi, M., Wang, C., Babu, M.#, Li, J.#',['ai'],null,'24(8):102925'],
+ [2020,'Cancer Research','A deep learning framework identifies pathogenic noncoding somatic mutations from personal prostate cancer genomes','Wang, C. and Li, J.#',['cancer','ai'],null,'80:4644-54'],
+ [2019,'Cell','Gene-environment interaction in the era of precision medicine','Li, J., Li, X., Zhang, S., Snyder, M.',['ai'],null,'177(1):38-44'],
+ [2019,'American Journal of Perinatology','A genome-wide analysis of clinical chorioamnionitis among preterm infants','Spiegel, A.M., Li, J., Oehlert, J.W., Mayo, J.A., Quaintance, C.C., Girsen, A.I., Druzin, M.L., El-Sayed, Y.Y., Shaw, G.M., Stevenson, D.K., Gibbs, R.S.',['pregnancy'],null,'36(14):1453-1458'],
+ [2019,'Pediatric Research','The contributions of genetics to premature birth','Stevenson, D.K., Wong, R.J., Shaw, G.M., Li, J., Wise, P.H., Davis, J.M.',['pregnancy'],null,'85:416-417'],
+ [2019,'Journal of Perinatology','Understanding health disparities','Stevenson, D.K., Wong, R.J., Aghaeepour, N., Angst, M.S., Darmstadt, G.L., DiGiulio, D.B., Druzin, M.L., Gaudilliere, B., Gibbs, R.S., Gould, J.B., Katz, M., Li, J., Moufarrej, M.N., Quaintance, C.C., Quake, S.R., Relman, D.A., Shaw, G.M., Snyder, M., Wang, X., Wise, P.H.',['pregnancy'],null,'39(3):354-358'],
+ [2018,'Cell','Decoding the genomics of abdominal aortic aneurysm','Li, J.*, Pan, C.*, Zhang, S.*, Spin, J.M., Deng, A., Dalman, R.L., Tsao, P.S., Snyder, M.',['heart'],'https://www.nature.com/articles/d41586-018-06209-3','174:1361-1372'],
+ [2018,'American Journal of Human Genetics','Natural selection has differentiated the progesterone receptor among human populations','Li, J., Hong, X., Mesiano, S., Muglia, L.J., Wang, X., Snyder, M., Stevenson, D.K., Shaw, G.M.',['pregnancy','evolution'],'https://www.nature.com/articles/d41586-018-05479-1','103:1-13'],
+ [2017,'PLoS Genetics','Fetal de novo mutations and preterm birth','Li, J., Oehlert, J., Snyder, M., Stevenson, D.K., Shaw, G.M.',['pregnancy'],null,'13(4): e1006689'],
+ [2016,'Current Opinion in Pediatrics','The genetic predisposition to bronchopulmonary dysplasia','Yu, K.*, Li, J.*, Snyder, M., Shaw, G.M., O\'Brodovich, H.M.',['pregnancy'],null,'28(3):318-323'],
+ [2015,'Cell Systems','Identification of human neuronal protein complexes reveals biochemical activities and convergent mechanisms of action in autism spectrum disorders','Li, J., Ma, Z., Shi, M., Malty, R.H., Aoki, H.A., Minic, Z., Phanse, S., Jin, K., Wall, D.P., Zhang, Z., Urban, A.E., Hallmayer, J., Babu, M., Snyder, M.',['brain'],null,'1(5):361-374'],
+ [2015,'American Journal of Respiratory and Critical Care Medicine','Exome sequencing of neonatal blood spots identifies genes implicated in bronchopulmonary dysplasia','Li, J.*, Yu, K.H.*, Oehlert, J., Jeliffe-Pawlowski, L.L., Gould, J.B., Stevenson, D.K., Snyder, M., Shaw, G.M., O\'Brodovich, H.M.',['pregnancy'],null,'192:589-596'],
+ [2014,'Molecular Systems Biology','Integrated systems analysis reveals a molecular network underlying autism spectrum disorders','Li, J.*, Shi, M.*, Ma, Z.*, Zhao, S., Euskirchen, G., Ziskin, J., Urban, A., Hallmayer, J., Snyder, M.',['brain'],null,'10:774'],
+ [2014,'Genome Research','Identifying mRNA sequence elements for target recognition by human Argonaute proteins','Li, J.*, Kim, T.*, Nutiu, R., Ray, D., Hughes, T.R., Zhang, Z.',['genome'],null,'24(5):775-785'],
+ [2014,'Nature','Principles of regulatory information conservation between mouse and human','Cheng, Y., Ma, Z., Kim, B.H., Wu, W., Cayting, P., …, Dogan, N., Li, J., Euskirchen, G., …, Snyder, M.',['genome'],null,'515:371-375'],
+ [2013,'Science','Extensive variation in chromatin states across humans','Kasowski, M., …, Li, J., Xie, D., …, Snyder, M.',['genome'],null,'342(6159):750-752'],
+ [2013,'Trends in Genetics','microRNA regulatory variation in human evolution','Li, J. and Zhang, Z.',['evolution'],null,'29(2):116-124'],
+ [2013,'Molecular Systems Biology','SH3 interactome conserves general function over specific form','Xin, X., Gfeller, D., …, Li, J., Cheng, A.T., …, Vidal, M., Boone, C., Sidhu, S.S., Bader, G.D.',['genome'],null,'9:652'],
+ [2012,'PLoS Genetics','Evidence for positive selection on a number of microRNA regulatory interactions during recent human evolution','Li, J., Liu, Y., Xin, X., Kim, T., Cabeza, E.A., Ren, J., Nielsen, R., Wrana, J., Zhang, Z.',['evolution'],null,'8(3): e1002578'],
+ [2011,'Nature Biotechnology','Systematic exploration of essential yeast gene function with temperature-sensitive mutants','Li, Z.*, Vizeacoumar, F.J.*, Bahr, S., Li, J., Warringer, J., Vizeacoumar, F.S., VanderSluis, B., Bellay, J., DeVit, M., Fleming, J.A., Stephens, A., Haase, J., Lin, Z.-Y., Baryshnikova, A., Min, R., Lu, H., Yan, Z., Jin, K., Datti, A., Nislow, C., Costanzo, M., Bulawa, C., Myers, C.L., Gingras, A., Zhang, Z., Blomberg, A., Bloom, K., Andrews, B., Boone, C.',['genome'],null,'29:361-367'],
+ [2011,'Nucleic Acids Research','PhenoM: a morphological database of essential genes in Saccharomyces cerevisiae','Jin, K., Li, J., Vizeacoumar, F.S., Li, Z., Min, R., Zamparo, L., Vizeacoumar, F.J., Datti, A., Andrews, B., Boone, C., Zhang, Z.',['genome'],null,'40(D1):D687-D694'],
+ [2010,'PNAS','Exploiting the determinants of stochastic gene expression in S. cerevisiae for genome-wide prediction of expression noise','Li, J., Min, R., Vizeacoumar, F.J., Jin, K., Xin, X., Zhang, Z.',['genome'],null,'107(23):10472-10477'],
+ [2010,'PLoS Computational Biology','Gene expression variability within and between human populations and implications toward disease susceptibility','Li, J., Liu, Y., Kim, T., Min, R., Zhang, Z.',['evolution'],null,'6(8): e1000910'],
+ [2010,'PLoS Genetics','The cellular robustness by genetic redundancy in budding yeast','Li, J., Yuan, Z., Zhang, Z.',['genome'],null,'6(11): e1001187'],
+ [2010,'Molecular Biology and Evolution','Revisiting the contribution of cis elements to expression divergence between duplicated genes: the role of chromatin structure','Li, J., Yuan, Z., Zhang, Z.',['evolution','genome'],null,'27(7):1461-1466'],
+ [2010,'Molecular Biology and Evolution','Evolution of an X-linked primate-specific microRNA cluster','Li, J., Liu, Y., Dong, D., Zhang, Z.',['evolution'],null,'27(3):671-683'],
+ [2010,'Journal of Cell Biology','Integrating high-throughput genetic interaction mapping and high-content screening to explore yeast spindle morphogenesis','Vizeacoumar, F.J., van Dyk, N., Vizeacoumar, F.S., Cheung, V., Li, J., Sydorsky, Y., Case, N., Li, Z., Datti, A., Nislow, C., Raught, B., Zhang, Z., Frey, B., Bloom, K., Boone, C., Andrews, B.J.',['genome'],null,'188:69-81'],
+ [2009,'Journal of Bioinformatics and Computational Biology','A probabilistic framework to improve microRNA target prediction by incorporating proteomics data','Li, J., Min, R., Bonner, A., Zhang, Z.',['ai'],null,'7(6):955-972'],
+ [2009,'Journal of Computational Biology','Learned random-walk kernels and empirical-map kernels for protein sequence classification','Min, R., Bonner, A., Li, J., Zhang, Z.',['ai'],null,'16(3):457-474'],
+ [2008,'Genome Biology','Preferential regulation of duplicated genes by microRNAs in mammals','Li, J., Musso, G., Zhang, Z.',['genome','evolution'],null,'9:R132'],
+ [2006,'International Journal of Biological Macromolecules','Identifying protein-protein interfacial residues in heterocomplexes using residue conservation scores','Li, J., Huang, D.S., Wang, B., Chen, P.',['ai'],null,'38(3-5):241-247'],
+ [2006,'Protein and Peptide Letters','Network analysis of the protein chain tertiary structures of heterocomplexes','Li, J., Huang, D.S., Lok, T.-M., Lyu, M.R., Li, Y.-X., Zhu, Y.-P.',['ai'],null,'13(4):391-396'],
+ [2006,'FEBS Letters','Predicting protein interaction sites from residue spatial sequence profile and evolution rate','Wang, B., Chen, P., Huang, D.S., Li, J., Lok, T.M., Lyu, M.R.',['ai'],null,'580(2):380-384'],
+ [2005,'Proceedings of IEEE International Joint Conference on Neural Networks','Characterizing human gene splice sites using evolved regular expressions','Li, J., Huang, D., MacCallum, R., Wu, X.-R.',['ai'],null,'1:493-498']
+];
+let filter='all', showAll=false;
+const filtersEl=document.getElementById('filters'), pubsEl=document.getElementById('pubs'), moreBtn=document.getElementById('more-btn'), countEl=document.getElementById('count');
+function renderFilters(){
+  filtersEl.innerHTML='';
+  const mk=(k,label,c)=>{ const b=document.createElement('button'); b.type='button'; b.textContent=label; b.setAttribute('aria-pressed',filter===k); b.id='f-'+k;
+    if(c&&filter!==k) b.style.boxShadow=`inset 4px 0 0 ${css(c)}`; b.onclick=()=>{filter=k;showAll=false;renderFilters();renderPubs()}; filtersEl.appendChild(b); };
+  mk('all','All');
+  Object.entries(THEMES).forEach(([k,[l,c]])=>mk(k,l,c));
+}
+function renderPubs(){
+  const list=P.filter(p=>filter==='all'||p[4].includes(filter));
+  const shown=showAll?list:list.slice(0,12);
+  pubsEl.innerHTML='';
+  shown.forEach(p=>{
+    const li=document.createElement('li'); li.className='pub';
+    const title=p[5]?`<a href="${p[5]}" target="_blank" rel="noopener">${p[2]}</a>`:p[2];
+    const authors=p[3].replace(/\*#|\*|#/g,m=>`<sup>${m}</sup>`).replace(/Li, J\.(<sup>[^<]*<\/sup>)?/g,'<b class="me-li">Li, J.$1</b>');
+    const cite=`<b>${p[1]}</b> ${p[0]}${p[6]?', '+p[6]:''}`;
+    li.innerHTML=`<div class="yr">${p[0]}</div><div style="min-width:0"><div class="ti">${title}</div><div class="au">${authors}</div><div class="me">${cite}</div><div class="dots">${p[4].map(t=>`<i style="background:${css(THEMES[t][1])}" title="${THEMES[t][0]}"></i>`).join('')}</div></div>`;
+    pubsEl.appendChild(li);
+  });
+  moreBtn.hidden=list.length<=12;
+  moreBtn.textContent=showAll?'Show fewer':`Show all ${list.length} papers`;
+  countEl.textContent=`${shown.length} of ${list.length}`;
+}
+moreBtn.onclick=()=>{showAll=!showAll;renderPubs(); if(!showAll) document.getElementById('publications').scrollIntoView({behavior:'smooth'})};
+
+/* ---------- People ---------- */
+const PEOPLE=[
+ ['Jingjing Li, Ph.D.','Principal Investigator','Associate Professor, UCSF Neurology. Trained in machine learning and molecular genetics, then multi-omics disease research at Stanford. Integrates multi-omics, evolutionary, health record and wearable data to catch disease early.','JL','--orange','--gold',true],
+ ['Yuejun Wang, Ph.D.','Postdoctoral Fellow','Computational biology, epigenomics and integrative analysis of disease genomes.','YW','--blue','--sky'],
+ ['Cheng Wang, Ph.D.','Postdoctoral Fellow','Single-cell analysis of neurogenomics and maternal–fetal medicine with machine learning.','CW','--mint','--blue'],
+ ['Maggie Tsui, B.Sc.','Ph.D. Student','Machine learning for precision oncology; prostate cancer across ancestries. Co-mentored by Franklin Huang.','MT','--coral','--violet'],
+ ['Zhida Luo, Ph.D.','Postdoctoral Fellow','Experimental and computational approaches to complex human diseases.','ZL','--violet','--blue'],
+ ['Tianzhu Wu, Ph.D.','Postdoctoral Fellow','Single-cell techniques and machine learning for complex biological processes.','TW','--gold','--orange'],
+ ['Tianqi Tang, Ph.D.','Postdoctoral Fellow','Computational tools for single-cell multi-omics in complex disease and precision medicine.','TT','--sky','--mint'],
+ ['Ryan Wu','Undergraduate Researcher','Bioengineering, UC Berkeley. Computational biology of brain disorders.','RW','--orange','--coral']
+];
+const pg=document.getElementById('people-grid');
+PEOPLE.forEach(p=>{ const d=document.createElement('div'); d.className='person'+(p[6]?' pi':'');
+  d.innerHTML=`<div class="ava" style="background:linear-gradient(135deg,${css(p[4])},${css(p[5])})"><img src="photos/${p[3].toLowerCase()}.jpg" alt="${p[0]}" loading="lazy" onerror="this.remove()"></div><div><div class="role">${p[1]}</div><h3>${p[0]}</h3><p>${p[2]}</p></div>`; pg.appendChild(d); });
+
+/* ---------- Press ---------- */
+const PRESS=[
+ ['Nature','Can pregnancy risks be telegraphed by the cellular mom–baby link?','https://www.ucsf.edu/news/2026/04/431736/can-pregnancy-risks-be-telegraphed-cellular-mom-baby-link'],
+ ['UCSF News','Genetic discovery reveals who can benefit from preterm birth therapy','https://www.ucsf.edu/news/2024/01/426976/genetic-discovery-reveals-who-can-benefit-preterm-birth-therapy'],
+ ['Nature','Gene important in pregnancy shows evolution in action','https://www.nature.com/articles/d41586-018-05479-1'],
+ ['Stanford Medicine','Genetic variation in progesterone receptor tied to prematurity risk','https://med.stanford.edu/news/all-news/2018/06/genetic-variation-in-progesterone-receptor-tied-to-prematurity.html'],
+ ['Nature','Decoding the genomics of abdominal aortic aneurysm','https://www.nature.com/articles/d41586-018-06209-3'],
+ ['Los Angeles Times','Study narrows down genetic suspects in autism','https://www.latimes.com/science/sciencenow/la-sci-sn-genetic-suspects-autism-20141230-story.html'],
+ ['Stanford Medicine','Newly identified molecular network in brain implicated in autism','https://med.stanford.edu/news/all-news/2014/12/newly-identified-molecular-network-in-brain-implicated-in-autism.html'],
+ ['The American Scholar','Autism and genetics','https://theamericanscholar.org/autism-and-genetics/']
+];
+const pr=document.getElementById('press-grid');
+PRESS.forEach(p=>{ const a=document.createElement('a'); a.href=p[2]; a.target='_blank'; a.rel='noopener'; a.innerHTML=`<span class="o">${p[0]}</span><span class="h">${p[1]}</span>`; pr.appendChild(a); });
+
+function drawAll(){ hero(); brain(); preg(); ai(); heart(); cancer(); evo(); renderFilters(); renderPubs(); }
+document.fonts&&document.fonts.ready.then(drawAll).catch(drawAll); if(!document.fonts) drawAll();
+const mq=matchMedia('(prefers-color-scheme: dark)'); mq.addEventListener&&mq.addEventListener('change',drawAll);
+new MutationObserver(drawAll).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+})();
+</script>
+</body>
+</html>
