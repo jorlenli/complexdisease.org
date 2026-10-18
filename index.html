@@ -65,17 +65,11 @@ section{padding-block:clamp(56px,8vw,110px)}
 .sec-head{display:flex;flex-direction:column;gap:10px;margin-bottom:36px}
 .sec-head h2{font-size:clamp(2rem,4.5vw,3.4rem);font-weight:800;letter-spacing:-.02em}
 
-/* what we do */
-.duo{display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:stretch}
-.half{background:var(--surface);border-radius:28px;padding:22px 24px 26px;box-shadow:var(--shadow);min-width:0;display:flex;flex-direction:column;gap:8px}
-.half svg{width:100%;height:auto;border-radius:18px;display:block;margin-bottom:6px}
-.half.lab svg{background:linear-gradient(135deg,#ffe9d6,#fff3e6)}
-.half.ai svg{background:linear-gradient(135deg,#dfeeff,#ece6ff)}
-.half h3{font-size:1.4rem;font-weight:800;letter-spacing:-.01em}
-.half p{margin:0;color:var(--muted);font-size:.95rem}
-.loop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--muted);font-weight:700;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase}
-.loop svg{width:84px;height:84px}
-@media (max-width:860px){ .duo{grid-template-columns:1fr} .loop svg{transform:rotate(90deg)} }/* research cards */
+/* what we do: the loop */
+.loopwrap{overflow-x:auto;overflow-y:hidden;border-radius:28px;background:var(--surface);box-shadow:var(--shadow)}
+.loopwrap canvas{display:block;width:100%;min-width:860px;height:auto}
+
+/* research cards */
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px}
 .card{background:var(--surface);border-radius:28px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;min-width:0;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
 .card:hover{transform:translateY(-6px)}
@@ -199,41 +193,14 @@ footer a:hover{text-decoration:underline}
     <div class="wrap">
       <div class="sec-head">
         <div class="eyebrow">What we do</div>
-        <h2>Wet lab meets machine learning.</h2>
-        <p class="lede">We generate the data ourselves, at scale, and build the AI that reads it. Each side drives the other.</p>
+        <h2>One loop, from tissue to model and back.</h2>
+        <p class="lede">We dissociate the tissue, build the atlas, train the model, and take its predictions back to the bench.</p>
       </div>
-      <div class="duo">
-        <div class="half lab">
-          <svg viewBox="0 0 400 220" aria-hidden="true">
-            <rect x="24" y="40" width="200" height="140" rx="14" fill="#fff" opacity=".9"/>
-            <g id="wells"></g>
-            <path d="M262,150 c-10,-40 20,-70 55,-62 c30,6 48,38 36,66 c-10,24 -40,34 -64,24 c-14,-6 -24,-16 -27,-28 z" fill="#ffd9c7"/>
-            <circle cx="300" cy="118" r="12" fill="#f4532a"/><circle cx="326" cy="132" r="9" fill="#ffc53d"/><circle cx="286" cy="140" r="8" fill="#2fd4a3"/><circle cx="314" cy="152" r="7" fill="#1f6fe8"/><circle cx="330" cy="108" r="6" fill="#ff6b8f"/>
-            <rect x="340" y="30" width="34" height="140" rx="8" fill="#1f6fe8" opacity=".15"/>
-            <rect x="340" y="90" width="34" height="80" rx="8" fill="#1f6fe8" opacity=".55"/>
-            <text x="357" y="70" text-anchor="middle" font-family="Plus Jakarta Sans,sans-serif" font-weight="800" font-size="12" fill="#1f6fe8">seq</text>
-          </svg>
-          <h3>We produce data at scale</h3>
-          <p>Single-cell and spatial multi-omics of human tissue, from the developing brain to the placenta, plus iPSC models and whole-genome sequencing.</p>
-          <div class="tagrow"><span class="pill">Single-cell multiome</span><span class="pill">Spatial transcriptomics</span><span class="pill">Single-cell proteomics</span><span class="pill">iPSC models</span><span class="pill">Genome sequencing</span></div>
-        </div>
-        <div class="loop" aria-hidden="true">
-          <svg viewBox="0 0 120 120"><path d="M60,18 A42,42 0 1 1 18,60" fill="none" stroke="var(--orange)" stroke-width="7" stroke-linecap="round"/><path d="M60,102 A42,42 0 1 1 102,60" fill="none" stroke="var(--blue)" stroke-width="7" stroke-linecap="round"/><path d="M8,52 L18,66 L30,54" fill="none" stroke="var(--orange)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><path d="M112,68 L102,54 L90,66" fill="none" stroke="var(--blue)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span>data ⇄ models</span>
-        </div>
-        <div class="half ai">
-          <svg viewBox="0 0 400 220" aria-hidden="true">
-            <g id="net"></g>
-            <text x="40" y="200" font-family="Manrope,sans-serif" font-weight="700" font-size="13" fill="var(--muted)" opacity=".8">ACGTTGCAAGT…</text>
-            <text x="250" y="200" font-family="Manrope,sans-serif" font-weight="700" font-size="13" fill="var(--muted)" opacity=".8">risk · targets · timing</text>
-          </svg>
-          <h3>We build AI to read it</h3>
-          <p>Deep learning on personal genomes and noncoding variation, integrated with health records, wearables and evolutionary signal, to predict disease before symptoms.</p>
-          <div class="tagrow"><span class="pill">Deep learning on genomes</span><span class="pill">Multi-omics integration</span><span class="pill">Health records &amp; wearables</span><span class="pill">Evolutionary genomics</span></div>
-        </div>
-      </div>
+      <div class="loopwrap"><canvas id="loopcv" width="1180" height="400" role="img" aria-label="One loop: tissue is dissociated into cells, cells become an atlas, the atlas trains a model, the model predicts risk and targets, and predictions return to the bench"></canvas></div>
     </div>
-  </section>  <section id="research">
+  </section>
+
+  <section id="research">
     <div class="wrap">
       <div class="sec-head">
         <div class="eyebrow">Research</div>
@@ -650,6 +617,73 @@ function flow(){
   }
   frame();
 }
+/* ---------- What we do: one loop (canvas) ---------- */
+let loopRaf=0;
+function loopAnim(){
+  const cv=document.getElementById('loopcv'); if(!cv) return; if(loopRaf) cancelAnimationFrame(loopRaf);
+  const ctx=cv.getContext('2d'), W=1180, H=400;
+  const dpr=Math.min(2,window.devicePixelRatio||1); cv.width=W*dpr; cv.height=H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+  const C={fg:css('--fg'),muted:css('--muted'),line:css('--line'),surface:css('--surface'),orange:css('--orange'),blue:css('--blue'),sky:css('--sky'),gold:css('--gold'),mint:css('--mint'),coral:css('--coral'),violet:css('--violet')};
+  const pal=[C.blue,C.mint,C.gold,C.coral,C.violet,C.sky];
+  const dark=matchMedia('(prefers-color-scheme: dark)').matches&&document.documentElement.dataset.theme!=='light'||document.documentElement.dataset.theme==='dark';
+  // scene anchors
+  const T={x:120,y:190}; // tissue
+  const CL={x0:200,x1:430}; // cells drift
+  const clusters=[[520,150,34],[600,120,26],[640,210,40],[560,250,30],[700,160,24],[690,260,22]]; // atlas blobs cx,cy,r
+  const M={x:800,y:190}; // model
+  const curve=p=>{const x=900+p*230; const y=320-Math.pow(p,1.6)*220-Math.sin(p*9)*8; return [x,y];}; // prediction curve
+  const ret=p=>{ // return path from curve end back to tissue, along the bottom
+    const a=[1130,100],b=[1150,370],c=[60,380],d=[80,230];
+    const u=1-p; return [u*u*u*a[0]+3*u*u*p*b[0]+3*u*p*p*c[0]+p*p*p*d[0], u*u*u*a[1]+3*u*u*p*b[1]+3*u*p*p*c[1]+p*p*p*d[1]]; };
+  const lerp=(a,b,t)=>a+(b-a)*t, ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+  const N=170, P=[];
+  for(let i=0;i<N;i++){ const k=i%clusters.length; P.push({p:Math.random(),sp:0.0009+Math.random()*0.0008,k,a:Math.random()*Math.PI*2,r:Math.random(),j:Math.random()*6.28,y0:T.y+(Math.random()-.5)*110,ny:(Math.random()-.5)*160,my:(Math.random()-.5)*50}); }
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let t=0;
+  function blob(cx,cy,r,ph,fill){ ctx.beginPath(); for(let i=0;i<=40;i++){ const a=i/40*Math.PI*2; const rr=r*(1+0.12*Math.sin(a*3+ph)+0.06*Math.sin(a*5-ph)); ctx.lineTo(cx+Math.cos(a)*rr,cy+Math.sin(a)*rr);} ctx.closePath(); ctx.fillStyle=fill; ctx.fill(); }
+  function label(x,y,s){ ctx.font='800 11px "Plus Jakarta Sans",sans-serif'; ctx.fillStyle=C.muted; ctx.textAlign='center'; ctx.letterSpacing='2px'; ctx.fillText(s.toUpperCase(),x,y); }
+  function pos(q){ const p=q.p; // p in [0,1) → [x,y,kind,size]
+    if(p<.16){ const u=p/.16; const x=lerp(T.x+40,CL.x1,ease(u)); const y=lerp(q.y0,q.y0+q.ny*.4,u); return [x,y,'cell',lerp(9,4,u)]; }
+    if(p<.48){ const u=(p-.16)/.32; const c=clusters[q.k]; const tx=c[0]+Math.cos(q.a)*c[2]*q.r, ty=c[1]+Math.sin(q.a)*c[2]*q.r; const s=Math.min(1,u*2.2); const x=lerp(CL.x1,tx,ease(s))+ (s>=1?Math.sin(t*2+q.j)*1.5:0); const y=lerp(q.y0+q.ny*.4,ty,ease(s))+(s>=1?Math.cos(t*2+q.j)*1.5:0); return [x,y,'dot',3.2]; }
+    if(p<.62){ const u=(p-.48)/.14; const c=clusters[q.k]; const sx=c[0]+Math.cos(q.a)*c[2]*q.r, sy=c[1]+Math.sin(q.a)*c[2]*q.r; const x=lerp(sx,M.x,ease(u)); const y=lerp(sy,M.y+q.my*(1-u),ease(u)); return [x,y,'dot',lerp(3.2,2,u)]; }
+    if(p<.80){ const u=(p-.62)/.18; const [x,y]=curve(u); return [x,y,'spark',3]; }
+    const u=(p-.80)/.20; const [x,y]=ret(u); return [x,y,'ghost',2];
+  }
+  function frame(){
+    ctx.clearRect(0,0,W,H);
+    // lane guides
+    ctx.strokeStyle=C.line; ctx.lineWidth=1; ctx.setLineDash([3,7]); ctx.beginPath(); for(let i=0;i<=60;i++){const [x,y]=ret(i/60); i?ctx.lineTo(x,y):ctx.moveTo(x,y);} ctx.stroke(); ctx.setLineDash([]);
+    // tissue + lens
+    blob(T.x,T.y,58,t*.6,dark?'#3a2538':'#ffd9c7'); blob(T.x-6,T.y+4,38,t*.9+1,dark?'#5a2e3f':'#ffb8a3');
+    ctx.beginPath(); ctx.arc(T.x,T.y,78,0,Math.PI*2); ctx.strokeStyle=C.orange; ctx.lineWidth=3; ctx.stroke();
+    ctx.beginPath(); ctx.arc(T.x,T.y,78,-.35,.35); ctx.strokeStyle=C.surface; ctx.lineWidth=6; ctx.stroke(); // gap where cells exit
+    // atlas halos
+    clusters.forEach((c,i)=>{ ctx.beginPath(); ctx.arc(c[0],c[1],c[2]+10,0,Math.PI*2); ctx.fillStyle=pal[i]; ctx.globalAlpha=dark?.16:.12; ctx.fill(); ctx.globalAlpha=1; });
+    // model: lens with layered nodes
+    ctx.beginPath(); ctx.ellipse(M.x,M.y,46,70,0,0,Math.PI*2); ctx.fillStyle=dark?'#1c2a5e':'#e8efff'; ctx.fill(); ctx.strokeStyle=C.blue; ctx.lineWidth=2.5; ctx.stroke();
+    const layers=[[-26,[-30,0,30]],[0,[-42,-14,14,42]],[26,[-20,20]]];
+    for(let i=0;i<layers.length-1;i++) layers[i][1].forEach(y1=>layers[i+1][1].forEach(y2=>{ ctx.beginPath(); ctx.moveTo(M.x+layers[i][0],M.y+y1); ctx.lineTo(M.x+layers[i+1][0],M.y+y2); ctx.strokeStyle=C.blue; ctx.globalAlpha=.3; ctx.lineWidth=1; ctx.stroke(); ctx.globalAlpha=1; }));
+    layers.forEach((l,i)=>l[1].forEach((y,j)=>{ const on=Math.sin(t*3+i*1.3+j)*.5+.5; ctx.beginPath(); ctx.arc(M.x+l[0],M.y+y,4.5,0,Math.PI*2); ctx.fillStyle=[C.blue,C.violet,C.orange][i]; ctx.globalAlpha=.5+.5*on; ctx.fill(); ctx.globalAlpha=1; }));
+    // prediction curve (drawn progressively, loops)
+    const head=(t*.18)%1.3; const show=Math.min(1,head);
+    ctx.beginPath(); for(let i=0;i<=60;i++){ const u=i/60*show; const [x,y]=curve(u); i?ctx.lineTo(x,y):ctx.moveTo(x,y);} ctx.strokeStyle=C.orange; ctx.lineWidth=4; ctx.lineCap='round'; ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(900,322); ctx.lineTo(1140,322); ctx.strokeStyle=C.line; ctx.lineWidth=1.5; ctx.stroke();
+    [[.35,C.mint],[.62,C.gold],[.86,C.coral]].forEach(([u,col])=>{ if(u<=show){ const [x,y]=curve(u); ctx.beginPath(); ctx.arc(x,y,7,0,Math.PI*2); ctx.fillStyle=col; ctx.fill(); ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fillStyle='#fff'; ctx.fill(); } });
+    if(show<1){ const [x,y]=curve(show); ctx.beginPath(); ctx.arc(x,y,9,0,Math.PI*2); ctx.fillStyle=C.orange; ctx.globalAlpha=.35; ctx.fill(); ctx.globalAlpha=1; }
+    // particles
+    P.forEach(q=>{ const [x,y,kind,s]=pos(q); 
+      if(kind==='cell'){ ctx.beginPath(); ctx.arc(x,y,s,0,Math.PI*2); ctx.fillStyle=dark?'#ffb8a3':'#ffd9c7'; ctx.fill(); ctx.strokeStyle=C.orange; ctx.lineWidth=1.5; ctx.stroke(); ctx.beginPath(); ctx.arc(x+s*.2,y-s*.15,s*.4,0,Math.PI*2); ctx.fillStyle=pal[q.k]; ctx.fill(); }
+      else if(kind==='dot'){ ctx.beginPath(); ctx.arc(x,y,s,0,Math.PI*2); ctx.fillStyle=pal[q.k]; ctx.fill(); }
+      else if(kind==='spark'){ ctx.beginPath(); ctx.arc(x,y,s+3,0,Math.PI*2); ctx.fillStyle=C.orange; ctx.globalAlpha=.25; ctx.fill(); ctx.globalAlpha=1; ctx.beginPath(); ctx.arc(x,y,s,0,Math.PI*2); ctx.fillStyle='#fff'; ctx.fill(); }
+      else { ctx.beginPath(); ctx.arc(x,y,s,0,Math.PI*2); ctx.fillStyle=C.muted; ctx.globalAlpha=.5; ctx.fill(); ctx.globalAlpha=1; }
+      if(!reduce){ q.p+=q.sp; if(q.p>=1){ q.p-=1; q.y0=T.y+(Math.random()-.5)*110; q.a=Math.random()*6.28; q.r=Math.random(); } }
+    });
+    // labels
+    label(T.x,T.y+112,'Tissue'); label(315,330,'Single cells'); label(615,330,'Atlas'); label(M.x,M.y+100,'Model'); label(1020,352,'Risk · targets · timing'); label(600,392,'back to the bench');
+    if(!reduce){ t+=0.016; loopRaf=requestAnimationFrame(frame); }
+  }
+  frame();
+}
 /* ---------- Publications ---------- */
 const THEMES={brain:['Developing Brain','--mint'],pregnancy:['Pregnancy','--coral'],cancer:['Cancer','--violet'],heart:['Heart','--orange'],ai:['AI for Genomes','--blue'],evolution:['Evolution','--gold'],genome:['Genome Science','--sky']};
 const P=[
@@ -760,7 +794,7 @@ function wwd(){
   const w=document.getElementById("wells"); if(w){ w.innerHTML=""; const cols=[css("--orange"),css("--gold"),css("--mint"),css("--blue"),css("--coral"),css("--violet")]; for(let r=0;r<6;r++)for(let c=0;c<10;c++){ const on=(r*7+c*3)%5!==0; el("circle",{cx:44+c*18,cy:60+r*20,r:6,fill:on?cols[(r+c)%6]:"#e6ecf7",opacity:on?.95:1},w);} }
   const n=document.getElementById("net"); if(n){ n.innerHTML=""; const L=[[60,[60,110,160]],[150,[40,80,120,160]],[240,[60,110,160]],[330,[85,135]]]; const cols=[css("--blue"),css("--violet"),css("--mint"),css("--orange")]; for(let i=0;i<L.length-1;i++)L[i][1].forEach(y1=>L[i+1][1].forEach(y2=>el("line",{x1:L[i][0],y1,x2:L[i+1][0],y2,stroke:css("--blue"),"stroke-width":1.3,opacity:.35},n))); L.forEach((l,i)=>l[1].forEach(y=>{el("circle",{cx:l[0],cy:y,r:9,fill:cols[i]},n);el("circle",{cx:l[0],cy:y,r:3,fill:"#fff"},n);})); }
 }
-function drawAll(){ hero(); flow(); wwd(); brain(); preg(); ai(); heart(); cancer(); evo(); renderFilters(); renderPubs(); }
+function drawAll(){ hero(); loopAnim(); flow(); wwd(); brain(); preg(); ai(); heart(); cancer(); evo(); renderFilters(); renderPubs(); }
 document.fonts&&document.fonts.ready.then(drawAll).catch(drawAll); if(!document.fonts) drawAll();
 const mq=matchMedia('(prefers-color-scheme: dark)'); mq.addEventListener&&mq.addEventListener('change',drawAll);
 new MutationObserver(drawAll).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
