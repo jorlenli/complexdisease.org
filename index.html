@@ -70,6 +70,10 @@ section{padding-block:clamp(56px,8vw,110px)}
 /* what we do: the loop */
 .loopwrap{overflow-x:auto;overflow-y:hidden;border-radius:28px;background:var(--surface);box-shadow:var(--shadow)}
 .loopwrap canvas{display:block;width:100%;min-width:860px;height:auto}
+.loopcap{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:18px;text-align:center;color:var(--muted);font-size:.95rem}
+.loopcap p{margin:0;padding-inline:8%}
+.loopcap b{color:var(--fg)}
+@media (max-width:700px){ .loopcap{grid-template-columns:1fr} }
 
 /* research cards */
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px}
@@ -198,7 +202,8 @@ footer a:hover{text-decoration:underline}
         <h2>One loop, from tissue to model and back.</h2>
         <p class="lede">We dissociate the tissue, build the atlas, train the model, and take its predictions back to the bench.</p>
       </div>
-      <div class="loopwrap"><canvas id="loopcv" width="1180" height="400" role="img" aria-label="One loop: tissue is dissociated into cells, cells become an atlas, the atlas trains a model, the model predicts risk and targets, and predictions return to the bench"></canvas></div>
+      <div class="loopwrap"><canvas id="loopcv" width="1180" height="420" role="img" aria-label="One loop: tissue is dissociated into cells, cells become an atlas, the atlas trains a model, the model predicts risk and targets, and predictions return to the bench"></canvas></div>
+      <div class="loopcap"><p><b>We produce the data.</b> Single-cell and spatial multi-omics of human tissue, at scale.</p><p><b>We build the models.</b> Deep learning on genomes, cells and health records.</p></div>
     </div>
   </section>
 
@@ -633,70 +638,43 @@ function walk(){
 let loopRaf=0;
 function loopAnim(){
   const cv=document.getElementById('loopcv'); if(!cv) return; if(loopRaf) cancelAnimationFrame(loopRaf);
-  const ctx=cv.getContext('2d'), W=1180, H=400;
-  const dpr=Math.min(2,window.devicePixelRatio||1); cv.width=W*dpr; cv.height=H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
-  const C={fg:css('--fg'),muted:css('--muted'),line:css('--line'),surface:css('--surface'),orange:css('--orange'),blue:css('--blue'),sky:css('--sky'),gold:css('--gold'),mint:css('--mint'),coral:css('--coral'),violet:css('--violet')};
-  const pal=[C.blue,C.mint,C.gold,C.coral,C.violet,C.sky];
-  const dark=matchMedia('(prefers-color-scheme: dark)').matches&&document.documentElement.dataset.theme!=='light'||document.documentElement.dataset.theme==='dark';
-  // scene anchors
-  const T={x:120,y:190}; // tissue
-  const CL={x0:200,x1:430}; // cells drift
-  const clusters=[[520,150,34],[600,120,26],[640,210,40],[560,250,30],[700,160,24],[690,260,22]]; // atlas blobs cx,cy,r
-  const M={x:800,y:190}; // model
-  const curve=p=>{const x=900+p*230; const y=320-Math.pow(p,1.6)*220-Math.sin(p*9)*8; return [x,y];}; // prediction curve
-  const ret=p=>{ // return path from curve end back to tissue, along the bottom
-    const a=[1130,100],b=[1150,370],c=[60,380],d=[80,230];
-    const u=1-p; return [u*u*u*a[0]+3*u*u*p*b[0]+3*u*p*p*c[0]+p*p*p*d[0], u*u*u*a[1]+3*u*u*p*b[1]+3*u*p*p*c[1]+p*p*p*d[1]]; };
-  const lerp=(a,b,t)=>a+(b-a)*t, ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
-  const N=170, P=[];
-  for(let i=0;i<N;i++){ const k=i%clusters.length; P.push({p:Math.random(),sp:0.0009+Math.random()*0.0008,k,a:Math.random()*Math.PI*2,r:Math.random(),j:Math.random()*6.28,y0:T.y+(Math.random()-.5)*110,ny:(Math.random()-.5)*160,my:(Math.random()-.5)*50}); }
-  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let t=0;
-  function blob(cx,cy,r,ph,fill){ ctx.beginPath(); for(let i=0;i<=40;i++){ const a=i/40*Math.PI*2; const rr=r*(1+0.12*Math.sin(a*3+ph)+0.06*Math.sin(a*5-ph)); ctx.lineTo(cx+Math.cos(a)*rr,cy+Math.sin(a)*rr);} ctx.closePath(); ctx.fillStyle=fill; ctx.fill(); }
-  function label(x,y,s){ ctx.font='800 11px "Plus Jakarta Sans",sans-serif'; ctx.fillStyle=C.muted; ctx.textAlign='center'; ctx.letterSpacing='2px'; ctx.fillText(s.toUpperCase(),x,y); }
-  function pos(q){ const p=q.p; // p in [0,1) → [x,y,kind,size]
-    if(p<.16){ const u=p/.16; const x=lerp(T.x+40,CL.x1,ease(u)); const y=lerp(q.y0,q.y0+q.ny*.4,u); return [x,y,'cell',lerp(9,4,u)]; }
-    if(p<.48){ const u=(p-.16)/.32; const c=clusters[q.k]; const tx=c[0]+Math.cos(q.a)*c[2]*q.r, ty=c[1]+Math.sin(q.a)*c[2]*q.r; const s=Math.min(1,u*2.2); const x=lerp(CL.x1,tx,ease(s))+ (s>=1?Math.sin(t*2+q.j)*1.5:0); const y=lerp(q.y0+q.ny*.4,ty,ease(s))+(s>=1?Math.cos(t*2+q.j)*1.5:0); return [x,y,'dot',3.2]; }
-    if(p<.62){ const u=(p-.48)/.14; const c=clusters[q.k]; const sx=c[0]+Math.cos(q.a)*c[2]*q.r, sy=c[1]+Math.sin(q.a)*c[2]*q.r; const x=lerp(sx,M.x,ease(u)); const y=lerp(sy,M.y+q.my*(1-u),ease(u)); return [x,y,'dot',lerp(3.2,2,u)]; }
-    if(p<.80){ const u=(p-.62)/.18; const [x,y]=curve(u); return [x,y,'spark',3]; }
-    const u=(p-.80)/.20; const [x,y]=ret(u); return [x,y,'ghost',2];
-  }
+  const W=1180,H=420, dpr=Math.min(2,window.devicePixelRatio||1); cv.width=W*dpr; cv.height=H*dpr; const ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+  const C={fg:css('--fg'),muted:css('--muted'),surface:css('--surface'),orange:css('--orange'),blue:css('--blue'),violet:css('--violet'),coral:css('--coral')};
+  const cx=590,cy=200,a=412;
+  // lemniscate of Bernoulli, arc-length parametrised so the beads are evenly spaced
+  const S=[],PT=[]; let len=0,px=0,py=0;
+  for(let i=0;i<=2400;i++){ const t=i/2400*Math.PI*2, d=1+Math.sin(t)*Math.sin(t); const x=cx+a*Math.cos(t)/d, y=cy+a*Math.sin(t)*Math.cos(t)/d; if(i) len+=Math.hypot(x-px,y-py); S.push(len); PT.push([x,y]); px=x; py=y; }
+  const at=s=>{ s=((s%len)+len)%len; let lo=0,hi=S.length-1; while(lo<hi){ const m=(lo+hi)>>1; if(S[m]<s) lo=m+1; else hi=m; } const i=Math.max(1,lo), f=(s-S[i-1])/((S[i]-S[i-1])||1); return [PT[i-1][0]+(PT[i][0]-PT[i-1][0])*f, PT[i-1][1]+(PT[i][1]-PT[i-1][1])*f]; };
+  const ribbon=new Path2D(); PT.forEach((p,i)=>i?ribbon.lineTo(p[0],p[1]):ribbon.moveTo(p[0],p[1])); ribbon.closePath();
+  const grad=ctx.createLinearGradient(cx-a,0,cx+a,0); grad.addColorStop(0,C.orange); grad.addColorStop(.5,C.violet); grad.addColorStop(1,C.blue);
+  const L=[cx-a,cy], R=[cx+a,cy];
+  const N=40, gap=len/N, reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let off=0, pulseL=0, pulseR=0;
+  const mix=x=>Math.min(1,Math.max(0,(x-(cx-70))/140)); // 0 in the left lobe, 1 in the right lobe
+  function text(x,y,s,size,spacing,alpha,align){ ctx.font='800 '+size+'px "Plus Jakarta Sans",sans-serif'; ctx.textAlign=align||'center'; ctx.textBaseline='middle'; ctx.letterSpacing=spacing; ctx.fillStyle=C.muted; ctx.globalAlpha=alpha; ctx.fillText(s,x,y); ctx.globalAlpha=1; }
+  function station(p,col,pl){ if(pl>.02){ ctx.beginPath(); ctx.arc(p[0],p[1],34,0,Math.PI*2); ctx.fillStyle=col; ctx.globalAlpha=pl*.16; ctx.fill(); ctx.globalAlpha=1; }
+    ctx.beginPath(); ctx.arc(p[0],p[1],17+pl*4,0,Math.PI*2); ctx.strokeStyle=col; ctx.lineWidth=2.5; ctx.globalAlpha=.55+.45*pl; ctx.stroke(); ctx.globalAlpha=1; }
   function frame(){
-    ctx.clearRect(0,0,W,H);
-    // lane guides
-    ctx.strokeStyle=C.line; ctx.lineWidth=1; ctx.setLineDash([3,7]); ctx.beginPath(); for(let i=0;i<=60;i++){const [x,y]=ret(i/60); i?ctx.lineTo(x,y):ctx.moveTo(x,y);} ctx.stroke(); ctx.setLineDash([]);
-    // tissue + lens
-    blob(T.x,T.y,58,t*.6,dark?'#3a2538':'#ffd9c7'); blob(T.x-6,T.y+4,38,t*.9+1,dark?'#5a2e3f':'#ffb8a3');
-    ctx.beginPath(); ctx.arc(T.x,T.y,78,0,Math.PI*2); ctx.strokeStyle=C.orange; ctx.lineWidth=3; ctx.stroke();
-    ctx.beginPath(); ctx.arc(T.x,T.y,78,-.35,.35); ctx.strokeStyle=C.surface; ctx.lineWidth=6; ctx.stroke(); // gap where cells exit
-    // atlas halos
-    clusters.forEach((c,i)=>{ ctx.beginPath(); ctx.arc(c[0],c[1],c[2]+10,0,Math.PI*2); ctx.fillStyle=pal[i]; ctx.globalAlpha=dark?.16:.12; ctx.fill(); ctx.globalAlpha=1; });
-    // model: lens with layered nodes
-    ctx.beginPath(); ctx.ellipse(M.x,M.y,46,70,0,0,Math.PI*2); ctx.fillStyle=dark?'#1c2a5e':'#e8efff'; ctx.fill(); ctx.strokeStyle=C.blue; ctx.lineWidth=2.5; ctx.stroke();
-    const layers=[[-26,[-30,0,30]],[0,[-42,-14,14,42]],[26,[-20,20]]];
-    for(let i=0;i<layers.length-1;i++) layers[i][1].forEach(y1=>layers[i+1][1].forEach(y2=>{ ctx.beginPath(); ctx.moveTo(M.x+layers[i][0],M.y+y1); ctx.lineTo(M.x+layers[i+1][0],M.y+y2); ctx.strokeStyle=C.blue; ctx.globalAlpha=.3; ctx.lineWidth=1; ctx.stroke(); ctx.globalAlpha=1; }));
-    layers.forEach((l,i)=>l[1].forEach((y,j)=>{ const on=Math.sin(t*3+i*1.3+j)*.5+.5; ctx.beginPath(); ctx.arc(M.x+l[0],M.y+y,4.5,0,Math.PI*2); ctx.fillStyle=[C.blue,C.violet,C.orange][i]; ctx.globalAlpha=.5+.5*on; ctx.fill(); ctx.globalAlpha=1; }));
-    // prediction curve (drawn progressively, loops)
-    const head=(t*.18)%1.3; const show=Math.min(1,head);
-    ctx.beginPath(); for(let i=0;i<=60;i++){ const u=i/60*show; const [x,y]=curve(u); i?ctx.lineTo(x,y):ctx.moveTo(x,y);} ctx.strokeStyle=C.orange; ctx.lineWidth=4; ctx.lineCap='round'; ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(900,322); ctx.lineTo(1140,322); ctx.strokeStyle=C.line; ctx.lineWidth=1.5; ctx.stroke();
-    [[.35,C.mint],[.62,C.gold],[.86,C.coral]].forEach(([u,col])=>{ if(u<=show){ const [x,y]=curve(u); ctx.beginPath(); ctx.arc(x,y,7,0,Math.PI*2); ctx.fillStyle=col; ctx.fill(); ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fillStyle='#fff'; ctx.fill(); } });
-    if(show<1){ const [x,y]=curve(show); ctx.beginPath(); ctx.arc(x,y,9,0,Math.PI*2); ctx.fillStyle=C.orange; ctx.globalAlpha=.35; ctx.fill(); ctx.globalAlpha=1; }
-    // particles
-    P.forEach(q=>{ const [x,y,kind,s]=pos(q); 
-      if(kind==='cell'){ ctx.beginPath(); ctx.arc(x,y,s,0,Math.PI*2); ctx.fillStyle=dark?'#ffb8a3':'#ffd9c7'; ctx.fill(); ctx.strokeStyle=C.orange; ctx.lineWidth=1.5; ctx.stroke(); ctx.beginPath(); ctx.arc(x+s*.2,y-s*.15,s*.4,0,Math.PI*2); ctx.fillStyle=pal[q.k]; ctx.fill(); }
-      else if(kind==='dot'){ ctx.beginPath(); ctx.arc(x,y,s,0,Math.PI*2); ctx.fillStyle=pal[q.k]; ctx.fill(); }
-      else if(kind==='spark'){ ctx.beginPath(); ctx.arc(x,y,s+3,0,Math.PI*2); ctx.fillStyle=C.orange; ctx.globalAlpha=.25; ctx.fill(); ctx.globalAlpha=1; ctx.beginPath(); ctx.arc(x,y,s,0,Math.PI*2); ctx.fillStyle='#fff'; ctx.fill(); }
-      else { ctx.beginPath(); ctx.arc(x,y,s,0,Math.PI*2); ctx.fillStyle=C.muted; ctx.globalAlpha=.5; ctx.fill(); ctx.globalAlpha=1; }
-      if(!reduce){ q.p+=q.sp; if(q.p>=1){ q.p-=1; q.y0=T.y+(Math.random()-.5)*110; q.a=Math.random()*6.28; q.r=Math.random(); } }
-    });
-    // labels
-    label(T.x,T.y+112,'Tissue'); label(315,330,'Single cells'); label(615,330,'Atlas'); label(M.x,M.y+100,'Model'); label(1020,352,'Risk · targets · timing'); label(600,392,'back to the bench');
-    if(!reduce){ t+=0.016; loopRaf=requestAnimationFrame(frame); }
+    ctx.clearRect(0,0,W,H); ctx.lineJoin='round'; ctx.lineCap='round';
+    ctx.strokeStyle=grad; ctx.globalAlpha=.09; ctx.lineWidth=28; ctx.stroke(ribbon);
+    ctx.globalAlpha=.5; ctx.lineWidth=1.6; ctx.stroke(ribbon); ctx.globalAlpha=1;
+    text(cx-a*.52,cy-10,'DATA',30,'10px',.32); text(cx-a*.52,cy+24,'SINGLE CELLS · ATLAS',11,'3px',.75);
+    text(cx+a*.52,cy-10,'MODEL',30,'10px',.32); text(cx+a*.52,cy+24,'DEEP LEARNING · PREDICTION',11,'3px',.75);
+    station(L,C.orange,pulseL); station(R,C.blue,pulseR); pulseL*=.93; pulseR*=.93;
+    text(L[0]-30,cy,'TISSUE',11,'3px',.9,'right'); text(R[0]+30,cy,'HYPOTHESIS',11,'3px',.9,'left');
+    for(let i=0;i<N;i++){ const [x,y]=at(i*gap+off), m=mix(x);
+      if(Math.hypot(x-L[0],y-L[1])<3) pulseL=1; if(Math.hypot(x-R[0],y-R[1])<3) pulseR=1;
+      // left lobe: a cell (white disc with orange membrane); right lobe: a solid blue data point
+      const r=4+(1-m)*3;
+      ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fillStyle=C.surface; ctx.fill();
+      ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.strokeStyle=C.orange; ctx.lineWidth=2; ctx.globalAlpha=1-m; ctx.stroke(); ctx.globalAlpha=1;
+      ctx.beginPath(); ctx.arc(x,y,r*(.45+.55*m),0,Math.PI*2); ctx.fillStyle=C.coral; ctx.globalAlpha=1-m; ctx.fill(); ctx.globalAlpha=1;
+      ctx.beginPath(); ctx.arc(x,y,r*(.45+.55*m),0,Math.PI*2); ctx.fillStyle=C.blue; ctx.globalAlpha=m; ctx.fill(); ctx.globalAlpha=1;
+    }
+    if(!reduce){ off-=1.05; loopRaf=requestAnimationFrame(frame); }
   }
   frame();
-}
-/* ---------- Publications ---------- */
+}/* ---------- Publications ---------- */
 const THEMES={brain:['Developing Brain','--mint'],pregnancy:['Pregnancy','--coral'],cancer:['Cancer','--violet'],heart:['Heart','--orange'],ai:['AI for Genomes','--blue'],evolution:['Evolution','--gold'],genome:['Genome Science','--sky']};
 const P=[
  [2026,'Nature','Single-cell spatiotemporal dissection of the human maternal–fetal interface','Wang, C.*, Zhou, Y.*, Wang, Y.J.*, Guha, T.K., Luo, Z., Mustafaraj, A., McIntyre, T.I., Schwab, M.E., Davidson, B.R., Reeder, G.C., Wong, R.J., England, S.K., Gonzalez, J.M., Blelloch, R., Combes, A.J., Giudice, L.C., Erlebacher, A., MacKenzie, T.C., Stevenson, D.K., Shaw, G.M., Snyder, M.P., Sun, X., Winn, V.D., Fisher, S.J.#, Li, J.#',['pregnancy'],'https://www.nature.com/articles/d41586-026-01037-2','653:167-179'],
