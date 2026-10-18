@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="Laboratory of Complex Diseases, UCSF. Single-cell atlases, personal genomes and machine learning to see disease before it shows.">
+<meta name="description" content="Laboratory of Complex Diseases, UCSF. See the unseen: single-cell atlases, personal genomes and machine learning.">
 <style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Li Lab UCSF</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Manrope:wght@400;500;600;700&display=swap">
@@ -188,7 +188,7 @@ footer a:hover{text-decoration:underline}
       <div class="wrap">
         <div class="eyebrow">Laboratory of Complex Diseases</div>
         <h1><span class="l1">From Big Data</span><span class="l2">to Big Model</span><span class="l3">to Big Mind</span></h1>
-        <p>Single-cell atlases, personal genomes and machine learning, built to see disease before it shows.</p>
+        <p>See the unseen.</p>
         <div class="cta"><a class="btn" href="#research">Explore the science</a><a class="btn alt" href="#join">Join us</a></div>
       </div>
     </div>
@@ -199,12 +199,11 @@ footer a:hover{text-decoration:underline}
     <div class="wrap">
       <div class="sec-head">
         <div class="eyebrow">What we do</div>
-        <h2>One loop, from tissue to model and back.</h2>
-        <p class="lede">We dissociate the tissue, build the atlas, train the model, and take its predictions back to the bench.</p>
+        <h2>One loop, from bench to model and back.</h2>
+        <p class="lede">Tissue goes in at the bench, comes back as a hypothesis. Two lines, one loop.</p>
       </div>
       <div class="loopwrap"><canvas id="loopcv" width="1180" height="420" role="img" aria-label="One loop: tissue is dissociated into cells, cells become an atlas, the atlas trains a model, the model predicts risk and targets, and predictions return to the bench"></canvas></div>
-      <div class="loopcap"><p><b>We produce the data.</b> Single-cell and spatial multi-omics of human tissue, at scale.</p><p><b>We build the models.</b> Deep learning on genomes, cells and health records.</p></div>
-    </div>
+          </div>
   </section>
 
   <section id="research">
@@ -634,47 +633,68 @@ function walk(){
     if(!reduce){ t+=0.016; walkRaf=requestAnimationFrame(frame); }
   }
   frame();
-}/* ---------- What we do: one loop (canvas) ---------- */
+}
+/* ---------- What we do: a transit loop (canvas) ---------- */
 let loopRaf=0;
 function loopAnim(){
   const cv=document.getElementById('loopcv'); if(!cv) return; if(loopRaf) cancelAnimationFrame(loopRaf);
   const W=1180,H=420, dpr=Math.min(2,window.devicePixelRatio||1); cv.width=W*dpr; cv.height=H*dpr; const ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
-  const C={fg:css('--fg'),muted:css('--muted'),surface:css('--surface'),orange:css('--orange'),blue:css('--blue'),violet:css('--violet'),coral:css('--coral')};
-  const cx=590,cy=200,a=412;
-  // lemniscate of Bernoulli, arc-length parametrised so the beads are evenly spaced
-  const S=[],PT=[]; let len=0,px=0,py=0;
-  for(let i=0;i<=2400;i++){ const t=i/2400*Math.PI*2, d=1+Math.sin(t)*Math.sin(t); const x=cx+a*Math.cos(t)/d, y=cy+a*Math.sin(t)*Math.cos(t)/d; if(i) len+=Math.hypot(x-px,y-py); S.push(len); PT.push([x,y]); px=x; py=y; }
-  const at=s=>{ s=((s%len)+len)%len; let lo=0,hi=S.length-1; while(lo<hi){ const m=(lo+hi)>>1; if(S[m]<s) lo=m+1; else hi=m; } const i=Math.max(1,lo), f=(s-S[i-1])/((S[i]-S[i-1])||1); return [PT[i-1][0]+(PT[i][0]-PT[i-1][0])*f, PT[i-1][1]+(PT[i][1]-PT[i-1][1])*f]; };
-  const ribbon=new Path2D(); PT.forEach((p,i)=>i?ribbon.lineTo(p[0],p[1]):ribbon.moveTo(p[0],p[1])); ribbon.closePath();
-  const grad=ctx.createLinearGradient(cx-a,0,cx+a,0); grad.addColorStop(0,C.orange); grad.addColorStop(.5,C.violet); grad.addColorStop(1,C.blue);
-  const L=[cx-a,cy], R=[cx+a,cy];
-  const N=40, gap=len/N, reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let off=0, pulseL=0, pulseR=0;
-  const mix=x=>Math.min(1,Math.max(0,(x-(cx-70))/140)); // 0 in the left lobe, 1 in the right lobe
-  function text(x,y,s,size,spacing,alpha,align){ ctx.font='800 '+size+'px "Plus Jakarta Sans",sans-serif'; ctx.textAlign=align||'center'; ctx.textBaseline='middle'; ctx.letterSpacing=spacing; ctx.fillStyle=C.muted; ctx.globalAlpha=alpha; ctx.fillText(s,x,y); ctx.globalAlpha=1; }
-  function station(p,col,pl){ if(pl>.02){ ctx.beginPath(); ctx.arc(p[0],p[1],34,0,Math.PI*2); ctx.fillStyle=col; ctx.globalAlpha=pl*.16; ctx.fill(); ctx.globalAlpha=1; }
-    ctx.beginPath(); ctx.arc(p[0],p[1],17+pl*4,0,Math.PI*2); ctx.strokeStyle=col; ctx.lineWidth=2.5; ctx.globalAlpha=.55+.45*pl; ctx.stroke(); ctx.globalAlpha=1; }
+  const dark=(matchMedia('(prefers-color-scheme: dark)').matches&&document.documentElement.dataset.theme!=='light')||document.documentElement.dataset.theme==='dark';
+  const C={fg:css('--fg'),muted:css('--muted'),surface:css('--surface'),line:css('--line'),orange:css('--orange'),blue:css('--blue')};
+  // rounded-rectangle loop, sampled for arc-length (clockwise from the left interchange)
+  const x0=170,x1=1010,y0=118,y1=302,R=92;
+  const PT=[],S=[]; let len=0;
+  const push=(x,y)=>{ if(PT.length){ const p=PT[PT.length-1]; len+=Math.hypot(x-p[0],y-p[1]); } PT.push([x,y]); S.push(len); };
+  const cx=(x0+x1)/2, cy=(y0+y1)/2;
+  push(x0,cy); // left interchange (west side), heading up
+  const arc=(ax,ay,a0,a1)=>{ for(let i=1;i<=40;i++){ const a=a0+(a1-a0)*i/40; push(ax+R*Math.cos(a),ay+R*Math.sin(a)); } };
+  push(x0,y0+R); arc(x0+R,y0+R,Math.PI,Math.PI*1.5); push(x1-R,y0); arc(x1-R,y0+R,Math.PI*1.5,Math.PI*2); push(x1,cy); push(x1,y1-R); arc(x1-R,y1-R,0,Math.PI*.5); push(x0+R,y1); arc(x0+R,y1-R,Math.PI*.5,Math.PI); push(x0,cy);
+  const at=s=>{ s=((s%len)+len)%len; let lo=0,hi=S.length-1; while(lo<hi){ const m=(lo+hi)>>1; if(S[m]<s) lo=m+1; else hi=m; } const i=Math.max(1,lo), f=(s-S[i-1])/((S[i]-S[i-1])||1); const p=PT[i-1],q=PT[i]; return [p[0]+(q[0]-p[0])*f, p[1]+(q[1]-p[1])*f, Math.atan2(q[1]-p[1],q[0]-p[0])]; };
+  const sOf=(x,y)=>{ let best=0,bd=1e9; for(let i=0;i<PT.length;i++){ const d=Math.hypot(PT[i][0]-x,PT[i][1]-y); if(d<bd){bd=d;best=i;} } return S[best]; };
+  const top=(x0+R+x1-R)/2, span=(x1-R)-(x0+R);
+  const stations=[
+    {n:'BENCH',x:x0,y:cy,hub:true,side:'w'},
+    {n:'SINGLE CELLS',x:top-span*.28,y:y0,side:'n'},{n:'MULTI-OMICS',x:top+span*.1,y:y0,side:'n'},
+    {n:'ATLAS',x:x1,y:cy,hub:true,side:'e'},
+    {n:'DEEP LEARNING',x:top+span*.1,y:y1,side:'s'},{n:'PREDICTION',x:top-span*.28,y:y1,side:'s'}
+  ].map(st=>Object.assign(st,{s:sOf(st.x,st.y)}));
+  stations.sort((a,b)=>a.s-b.s);
+  const halfS=sOf(x1,cy);
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // train state: travel between stations with ease, dwell at each
+  let idx=0, prog=1, dwell=70, t=0;
+  const easeIO=u=>u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
+  function trainPos(){ const a=stations[idx].s, b=stations[(idx+1)%stations.length].s; const d=((b-a)%len+len)%len; return a+d*easeIO(prog); }
+  function label(st){ ctx.font=(st.hub?'800 12px':'700 11px')+' "Plus Jakarta Sans",sans-serif'; ctx.fillStyle=st.hub?C.fg:C.muted; ctx.letterSpacing='1.5px'; ctx.textBaseline='middle';
+    if(st.side==='n'){ ctx.textAlign='center'; ctx.fillText(st.n,st.x,st.y-26); } else if(st.side==='s'){ ctx.textAlign='center'; ctx.fillText(st.n,st.x,st.y+26); }
+    else if(st.side==='w'){ ctx.textAlign='right'; ctx.fillText(st.n,st.x-24,st.y); } else { ctx.textAlign='left'; ctx.fillText(st.n,st.x+24,st.y); } }
+  function car(x,y,ang,front,back){ ctx.save(); ctx.translate(x,y); ctx.rotate(ang); const L=50,Hh=18;
+    ctx.beginPath(); ctx.roundRect(-L/2,-Hh/2,L,Hh,[front?8:3,front?8:3,back?8:3,back?8:3]); ctx.fillStyle=dark?'#dfe6f5':'#f3f6fc'; ctx.fill(); ctx.strokeStyle=dark?'#9fb0d8':'#9aa9c9'; ctx.lineWidth=1.2; ctx.stroke();
+    ctx.beginPath(); ctx.roundRect(-L/2+5,-3.5,L-10,7,2); ctx.fillStyle=C.blue; ctx.fill(); // window band
+    for(let i=-L/2+9;i<L/2-8;i+=9){ ctx.fillStyle='rgba(255,255,255,.55)'; ctx.fillRect(i,-2.5,6,5); }
+    if(front){ ctx.beginPath(); ctx.arc(L/2-3,0,2.2,0,Math.PI*2); ctx.fillStyle='#ffe9a8'; ctx.fill(); }
+    ctx.restore(); }
   function frame(){
-    ctx.clearRect(0,0,W,H); ctx.lineJoin='round'; ctx.lineCap='round';
-    ctx.strokeStyle=grad; ctx.globalAlpha=.09; ctx.lineWidth=28; ctx.stroke(ribbon);
-    ctx.globalAlpha=.5; ctx.lineWidth=1.6; ctx.stroke(ribbon); ctx.globalAlpha=1;
-    text(cx-a*.52,cy-10,'DATA',30,'10px',.32); text(cx-a*.52,cy+24,'SINGLE CELLS · ATLAS',11,'3px',.75);
-    text(cx+a*.52,cy-10,'MODEL',30,'10px',.32); text(cx+a*.52,cy+24,'DEEP LEARNING · PREDICTION',11,'3px',.75);
-    station(L,C.orange,pulseL); station(R,C.blue,pulseR); pulseL*=.93; pulseR*=.93;
-    text(L[0]-30,cy,'TISSUE',11,'3px',.9,'right'); text(R[0]+30,cy,'HYPOTHESIS',11,'3px',.9,'left');
-    for(let i=0;i<N;i++){ const [x,y]=at(i*gap+off), m=mix(x);
-      if(Math.hypot(x-L[0],y-L[1])<3) pulseL=1; if(Math.hypot(x-R[0],y-R[1])<3) pulseR=1;
-      // left lobe: a cell (white disc with orange membrane); right lobe: a solid blue data point
-      const r=4+(1-m)*3;
-      ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fillStyle=C.surface; ctx.fill();
-      ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.strokeStyle=C.orange; ctx.lineWidth=2; ctx.globalAlpha=1-m; ctx.stroke(); ctx.globalAlpha=1;
-      ctx.beginPath(); ctx.arc(x,y,r*(.45+.55*m),0,Math.PI*2); ctx.fillStyle=C.coral; ctx.globalAlpha=1-m; ctx.fill(); ctx.globalAlpha=1;
-      ctx.beginPath(); ctx.arc(x,y,r*(.45+.55*m),0,Math.PI*2); ctx.fillStyle=C.blue; ctx.globalAlpha=m; ctx.fill(); ctx.globalAlpha=1;
-    }
-    if(!reduce){ off-=1.05; loopRaf=requestAnimationFrame(frame); }
+    ctx.clearRect(0,0,W,H);
+    // the two lines: Data line (orange) over the top half, Model line (blue) over the bottom half
+    const seg=(a,b,col)=>{ ctx.beginPath(); for(let s=a;s<=b;s+=4){ const [x,y]=at(s); s===a?ctx.moveTo(x,y):ctx.lineTo(x,y);} const [x,y]=at(b); ctx.lineTo(x,y); ctx.strokeStyle=col; ctx.lineWidth=10; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.stroke(); };
+    seg(0,halfS,C.orange); seg(halfS,len,C.blue);
+    // legend
+    ctx.font='800 11px "Plus Jakarta Sans",sans-serif'; ctx.letterSpacing='2px'; ctx.textBaseline='middle'; ctx.textAlign='left';
+    ctx.textAlign='center'; [[C.orange,'DATA LINE  ·  WE PRODUCE THE DATA',cy-30],[C.blue,'MODEL LINE  ·  WE BUILD THE MODELS',cy+30]].forEach(l=>{ ctx.fillStyle=l[0]; ctx.globalAlpha=.9; ctx.fillText(l[1],cx,l[2]); ctx.globalAlpha=1; });
+    // stations
+    stations.forEach(st=>{ const col=st.y===y0?C.orange:(st.y===y1?C.blue:null);
+      ctx.beginPath(); ctx.arc(st.x,st.y,st.hub?11:7,0,Math.PI*2); ctx.fillStyle=C.surface; ctx.fill(); ctx.lineWidth=st.hub?4:3.5; ctx.strokeStyle=st.hub?C.fg:col; ctx.stroke();
+      if(st.hub){ ctx.beginPath(); ctx.arc(st.x,st.y,4,0,Math.PI*2); ctx.fillStyle=C.fg; ctx.fill(); }
+      label(st); });
+    // train (three cars following the curve)
+    const s=trainPos(); const dir=1;
+    for(let i=2;i>=0;i--){ const [x,y,ang]=at(s-i*54); car(x,y,ang,i===0,i===2); }
+    if(!reduce){ if(prog<1){ prog+=0.009; if(prog>=1){ prog=1; dwell=55; } } else if(dwell>0){ dwell--; } else { idx=(idx+1)%stations.length; prog=0; } t+=0.016; loopRaf=requestAnimationFrame(frame); }
   }
   frame();
-}/* ---------- Publications ---------- */
+}
+/* ---------- Publications ---------- */
 const THEMES={brain:['Developing Brain','--mint'],pregnancy:['Pregnancy','--coral'],cancer:['Cancer','--violet'],heart:['Heart','--orange'],ai:['AI for Genomes','--blue'],evolution:['Evolution','--gold'],genome:['Genome Science','--sky']};
 const P=[
  [2026,'Nature','Single-cell spatiotemporal dissection of the human maternal–fetal interface','Wang, C.*, Zhou, Y.*, Wang, Y.J.*, Guha, T.K., Luo, Z., Mustafaraj, A., McIntyre, T.I., Schwab, M.E., Davidson, B.R., Reeder, G.C., Wong, R.J., England, S.K., Gonzalez, J.M., Blelloch, R., Combes, A.J., Giudice, L.C., Erlebacher, A., MacKenzie, T.C., Stevenson, D.K., Shaw, G.M., Snyder, M.P., Sun, X., Winn, V.D., Fisher, S.J.#, Li, J.#',['pregnancy'],'https://www.nature.com/articles/d41586-026-01037-2','653:167-179'],
