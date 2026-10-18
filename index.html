@@ -78,7 +78,16 @@ section{padding-block:clamp(56px,8vw,110px)}
 .tagrow{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .pill{font-family:var(--display);font-weight:700;font-size:.72rem;padding:4px 10px;border-radius:999px;background:var(--bg);border:1px solid var(--line)}
 
-/* publications */
+/* data band */
+.data-band{background:radial-gradient(1200px 500px at 70% -10%,#1b3b9a 0%,#0a1230 60%);color:#fff}
+.data-band h2{color:#fff}
+.datasets{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.datasets a{text-decoration:none;color:#fff;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:24px;padding:22px;display:flex;flex-direction:column;gap:8px;min-width:0;transition:transform .3s,background .3s}
+.datasets a:hover{transform:translateY(-4px);background:rgba(255,255,255,.12)}
+.datasets svg{width:100%;height:auto;max-width:180px;display:block;margin-bottom:6px}
+.datasets .k{font-family:var(--display);font-weight:800;font-size:1.2rem}
+.datasets .d{color:#b9c6ea;font-size:.92rem}
+.datasets .go{margin-top:auto;padding-top:8px;font-weight:700;color:var(--sky)}/* publications */
 .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
 .filters button{font:inherit;font-weight:700;font-size:.85rem;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
 .filters button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
@@ -154,6 +163,7 @@ footer a:hover{text-decoration:underline}
     <a class="brand" href="#top"><svg class="mark" viewBox="0 0 64 64" width="64" height="64" aria-hidden="true"><defs><linearGradient id="lgMark" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4532a"/><stop offset="1" stop-color="#ff8a5b"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#lgMark)"/><rect x="13" y="14" width="5" height="36" rx="1.5" fill="#fff"/><rect x="46" y="14" width="5" height="36" rx="1.5" fill="#fff"/><rect x="11" y="21" width="9" height="3" fill="#fff"/><rect x="44" y="21" width="9" height="3" fill="#fff"/><rect x="6" y="46" width="52" height="4" rx="1" fill="#fff" opacity=".9"/><line x1="21" y1="18" x2="21" y2="24" stroke="#ffc53d" stroke-width="3" stroke-linecap="round"/><line x1="21" y1="24" x2="21" y2="31" stroke="#2fd4a3" stroke-width="3" stroke-linecap="round"/><line x1="43" y1="18" x2="43" y2="24" stroke="#1f6fe8" stroke-width="3" stroke-linecap="round"/><line x1="43" y1="24" x2="43" y2="31" stroke="#ff6b8f" stroke-width="3" stroke-linecap="round"/><path d="M8,24 Q20,8 32,24 T56,24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M8,24 Q20,40 32,24 T56,24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".85"/></svg>Li Lab · UCSF</a>
     <nav class="links">
       <a href="#research">Research</a>
+      <a href="#data">Data</a>
       <a href="#publications">Publications</a>
       <a href="#people">People</a>
       <a href="#join">Join</a>
@@ -248,7 +258,35 @@ footer a:hover{text-decoration:underline}
     </div>
   </section>
 
-  <section id="publications" style="padding-top:0">
+  <section id="data" class="data-band">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow" style="color:var(--sky)">Data · COSMOS</div>
+        <h2>Explore our single-cell atlases.</h2>
+        <p class="lede" style="color:#b9c6ea">Cellular Omics and Spatial Mapping Of States. Browse every cell we have profiled, gene by gene, at <a href="https://cell.ucsf.edu" target="_blank" rel="noopener" style="color:#fff">cell.ucsf.edu</a>.</p>
+      </div>
+      <div class="datasets">
+        <a href="https://cell.ucsf.edu/snMultiome/" target="_blank" rel="noopener">
+          <svg viewBox="0 0 120 80" aria-hidden="true"><circle cx="60" cy="40" r="30" fill="#1f6fe8" opacity=".35"/><circle cx="44" cy="34" r="9" fill="#8ed6ff"/><circle cx="68" cy="28" r="7" fill="#2fd4a3"/><circle cx="72" cy="50" r="10" fill="#ffc53d"/><circle cx="50" cy="54" r="6" fill="#ff6b8f"/><path d="M44,34 L68,28 L72,50 L50,54 Z" fill="none" stroke="#fff" stroke-width="1.5" opacity=".7"/></svg>
+          <span class="k">Developing neocortex</span>
+          <span class="d">Single-nucleus multiome across gestation. Nature 2025.</span>
+          <span class="go">Open browser →</span>
+        </a>
+        <a href="https://cell.ucsf.edu/snPlacenta/" target="_blank" rel="noopener">
+          <svg viewBox="0 0 120 80" aria-hidden="true"><path d="M20,70 A40,40 0 0 1 100,70 Z" fill="#ff6b8f" opacity=".5"/><circle cx="60" cy="52" r="14" fill="#fff" opacity=".9"/><circle cx="60" cy="52" r="7" fill="#2fd4a3"/><circle cx="36" cy="60" r="4" fill="#ffc53d"/><circle cx="84" cy="60" r="4" fill="#ffc53d"/><circle cx="46" cy="40" r="3.5" fill="#8ed6ff"/><circle cx="74" cy="40" r="3.5" fill="#8ed6ff"/></svg>
+          <span class="k">Maternal–fetal interface</span>
+          <span class="d">Spatiotemporal single-cell map of the placenta and decidua. Nature 2026.</span>
+          <span class="go">Open browser →</span>
+        </a>
+        <a href="https://cell.ucsf.edu/SCProteome/" target="_blank" rel="noopener">
+          <svg viewBox="0 0 120 80" aria-hidden="true"><path d="M30,60 C40,20 60,20 70,40 S95,60 100,30" fill="none" stroke="#8b5cf6" stroke-width="6" stroke-linecap="round" opacity=".8"/><circle cx="30" cy="60" r="6" fill="#ffc53d"/><circle cx="70" cy="40" r="6" fill="#2fd4a3"/><circle cx="100" cy="30" r="6" fill="#ff6b8f"/><circle cx="50" cy="28" r="4" fill="#8ed6ff"/></svg>
+          <span class="k">Brain single-cell proteome</span>
+          <span class="d">Protein-level landscape of the developing human brain. Nat Biotech 2026.</span>
+          <span class="go">Open browser →</span>
+        </a>
+      </div>
+    </div>
+  </section>  <section id="publications">
     <div class="wrap">
       <div class="sec-head">
         <div class="eyebrow">Publications</div>
@@ -309,7 +347,7 @@ footer a:hover{text-decoration:underline}
     </div>
     <div class="ext">
       <div class="row">
-      <a href="https://cell.ucsf.edu/snMultiome/" target="_blank" rel="noopener">Developing Brain Cell Browser</a>
+      <a href="https://cell.ucsf.edu" target="_blank" rel="noopener">COSMOS data portal</a>
       <a href="https://neurology.ucsf.edu/" target="_blank" rel="noopener">UCSF Neurology</a>
       <a href="https://stemcell.ucsf.edu/" target="_blank" rel="noopener">UCSF Regeneration Medicine</a>
       <a href="https://www.ucsf.edu/" target="_blank" rel="noopener">UCSF</a>
