@@ -12,17 +12,17 @@
 <style>
 /* Layout: full-bleed illustrated bands; San Francisco landmarks redrawn as genomes, neurons and networks. */
 :root{
-  --bg:#f6f9ff; --surface:#ffffff; --fg:#0e1b3a; --muted:#56648a; --line:#dde5f5;
+  --bg:#f6f9ff; --surface:#ffffff; --fg:#0e1b3a; --steelA:#6b7482; --steelB:#2a2f38; --muted:#56648a; --line:#dde5f5;
   --orange:#f4532a; --blue:#1f6fe8; --sky:#8ed6ff; --gold:#ffc53d; --mint:#2fd4a3; --coral:#ff6b8f; --violet:#8b5cf6;
   --fog:#ffffff; --water:#bfe3ff; --hill:#d9f2e6; --tower:#f4532a;
   --display:'Plus Jakarta Sans',system-ui,sans-serif; --body:'Manrope',system-ui,sans-serif;
   --shadow:0 18px 50px rgba(14,27,58,.10);
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
-  --bg:#0a1230; --surface:#121c42; --fg:#eef3ff; --muted:#a6b3d6; --line:#243160;
+  --bg:#0a1230; --surface:#121c42; --fg:#eef3ff; --steelA:#f3f5f8; --steelB:#9ea6b2; --muted:#a6b3d6; --line:#243160;
   --fog:#2a3a78; --water:#16307a; --hill:#143a4c; --tower:#ff6a3d; --shadow:0 18px 50px rgba(0,0,0,.4); color-scheme:dark } }
 :root[data-theme="dark"]{
-  --bg:#0a1230; --surface:#121c42; --fg:#eef3ff; --muted:#a6b3d6; --line:#243160;
+  --bg:#0a1230; --surface:#121c42; --fg:#eef3ff; --steelA:#f3f5f8; --steelB:#9ea6b2; --muted:#a6b3d6; --line:#243160;
   --fog:#2a3a78; --water:#16307a; --hill:#143a4c; --tower:#ff6a3d; --shadow:0 18px 50px rgba(0,0,0,.4); color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -40,7 +40,7 @@ h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.05}
 .brand{white-space:nowrap;display:flex;align-items:center;gap:14px;font-family:var(--display);font-weight:800;font-size:1.35rem;text-decoration:none;letter-spacing:-.01em}
 .brand .mark{width:72px;height:72px;flex:none}
 .brand .bt{display:flex;flex-direction:column;justify-content:space-between;height:72px;line-height:.92;padding-block:2px}
-.brand .bt b,.brand .bt small{font-size:2.1rem;font-weight:800;letter-spacing:-.02em;color:var(--fg)}
+.brand .bt b,.brand .bt small{font-size:2.1rem;font-weight:800;letter-spacing:-.02em;color:transparent;background:linear-gradient(180deg,var(--steelA),var(--steelB));-webkit-background-clip:text;background-clip:text}
 @media (max-width:700px){ .brand .mark{width:52px;height:52px} .brand .bt{height:52px} .brand .bt b,.brand .bt small{font-size:1.45rem} }
 footer .walk{width:min(100%,600px);height:auto;display:block}
 footer .ext{flex-direction:column;align-items:flex-end;gap:14px;flex:1 1 420px;max-width:600px}
