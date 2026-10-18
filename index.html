@@ -57,7 +57,7 @@ footer .ext .row{display:flex;gap:14px;flex-wrap:wrap;justify-content:flex-end}
 .hero h1 .l1{font-size:.5em;color:var(--muted);font-weight:700;letter-spacing:-.01em}
 .hero h1 .l2{font-size:.72em;color:var(--blue);padding-left:.35em}
 .hero h1 .l3{color:var(--orange);padding-left:.55em}
-.hero p{margin:14px 0 0;max-width:34ch;font-weight:500;font-size:clamp(.95rem,1.6vw,1.2rem);color:var(--muted)}
+.hero p{margin:14px 0 6px;max-width:34ch;font-weight:500;font-size:clamp(.95rem,1.6vw,1.2rem);color:var(--muted)}
 .hero .cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
 .btn{display:inline-block;text-decoration:none;font-weight:700;font-family:var(--display);padding:12px 20px;border-radius:999px;background:var(--fg);color:var(--bg);font-size:.95rem}
 .btn.alt{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 2px var(--fg)}
@@ -189,7 +189,6 @@ footer a:hover{text-decoration:underline}
         <div class="eyebrow">Laboratory of Complex Diseases</div>
         <h1><span class="l1">From Big Data</span><span class="l2">to Big Model</span><span class="l3">to Big Mind</span></h1>
         <p>See the unseen.</p>
-        <div class="cta"><a class="btn" href="#research">Explore the science</a><a class="btn alt" href="#join">Join us</a></div>
       </div>
     </div>
     <svg id="hero-svg" viewBox="0 0 1200 560" role="img" aria-label="The Golden Gate Bridge drawn with its main cables as a DNA double helix"></svg>
@@ -398,7 +397,6 @@ function hero(){
   el('feGaussianBlur',{stdDeviation:22},blur);
 
   el('rect',{x:0,y:0,width:1200,height:560,fill:'url(#gSky)'},s);
-  el('circle',{cx:1010,cy:120,r:58,fill:css('--gold'),opacity:.9},s);
   // headlands
   el('path',{d:'M0,330 C80,290 150,300 220,320 C260,332 300,340 330,345 L330,560 L0,560 Z',fill:css('--hill')},s);
   el('path',{d:'M870,345 C930,330 980,300 1050,290 C1110,282 1160,300 1200,320 L1200,560 L870,560 Z',fill:css('--hill'),opacity:.85},s);
