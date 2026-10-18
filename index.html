@@ -36,9 +36,9 @@ h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.05}
 .nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;backdrop-filter:blur(14px);background:color-mix(in srgb,var(--bg) 78%,transparent);border-bottom:1px solid var(--line)}
 .nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:12px}
 .brand{white-space:nowrap;display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:800;font-size:1.1rem;text-decoration:none;letter-spacing:-.01em}
-.brand .mark{width:30px;height:30px;border-radius:8px}
-footer .mark{width:56px;height:56px}
-footer .ext{flex-direction:column;align-items:flex-end;gap:22px}
+.brand .dot{width:28px;height:28px;border-radius:50%;background:conic-gradient(from 200deg,var(--orange),var(--gold),var(--mint),var(--blue),var(--orange))}
+footer .flow{width:min(100%,600px);height:auto;display:block}
+footer .ext{flex-direction:column;align-items:flex-end;gap:14px;flex:1 1 420px;max-width:600px}
 footer .ext .row{display:flex;gap:14px;flex-wrap:wrap;justify-content:flex-end}
 .links{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
 .links a{text-decoration:none;font-weight:600;font-size:.9rem;padding:8px 12px;border-radius:999px;color:var(--muted)}
@@ -170,7 +170,7 @@ footer a:hover{text-decoration:underline}
 
 <header class="nav">
   <div class="wrap">
-    <a class="brand" href="#top"><svg class="mark" viewBox="0 0 64 64" width="64" height="64" aria-hidden="true"><defs><linearGradient id="lgMark" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4532a"/><stop offset="1" stop-color="#ff8a5b"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#lgMark)"/><rect x="13" y="14" width="5" height="36" rx="1.5" fill="#fff"/><rect x="46" y="14" width="5" height="36" rx="1.5" fill="#fff"/><rect x="11" y="21" width="9" height="3" fill="#fff"/><rect x="44" y="21" width="9" height="3" fill="#fff"/><rect x="6" y="46" width="52" height="4" rx="1" fill="#fff" opacity=".9"/><line x1="21" y1="18" x2="21" y2="24" stroke="#ffc53d" stroke-width="3" stroke-linecap="round"/><line x1="21" y1="24" x2="21" y2="31" stroke="#2fd4a3" stroke-width="3" stroke-linecap="round"/><line x1="43" y1="18" x2="43" y2="24" stroke="#1f6fe8" stroke-width="3" stroke-linecap="round"/><line x1="43" y1="24" x2="43" y2="31" stroke="#ff6b8f" stroke-width="3" stroke-linecap="round"/><path d="M8,24 Q20,8 32,24 T56,24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M8,24 Q20,40 32,24 T56,24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".85"/></svg>Li Lab · UCSF</a>
+    <a class="brand" href="#top"><span class="dot"></span>Li Lab · UCSF</a>
     <nav class="links">
       <a href="#research">Research</a>
       <a href="#atlas">Atlas</a>
@@ -400,7 +400,7 @@ footer a:hover{text-decoration:underline}
       <a href="https://stemcell.ucsf.edu/" target="_blank" rel="noopener">UCSF Regeneration Medicine</a>
       <a href="https://www.ucsf.edu/" target="_blank" rel="noopener">UCSF</a>
       </div>
-      <svg class="mark" viewBox="0 0 64 64" width="64" height="64" aria-hidden="true"><defs><linearGradient id="lgMark" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4532a"/><stop offset="1" stop-color="#ff8a5b"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#lgMark)"/><rect x="13" y="14" width="5" height="36" rx="1.5" fill="#fff"/><rect x="46" y="14" width="5" height="36" rx="1.5" fill="#fff"/><rect x="11" y="21" width="9" height="3" fill="#fff"/><rect x="44" y="21" width="9" height="3" fill="#fff"/><rect x="6" y="46" width="52" height="4" rx="1" fill="#fff" opacity=".9"/><line x1="21" y1="18" x2="21" y2="24" stroke="#ffc53d" stroke-width="3" stroke-linecap="round"/><line x1="21" y1="24" x2="21" y2="31" stroke="#2fd4a3" stroke-width="3" stroke-linecap="round"/><line x1="43" y1="18" x2="43" y2="24" stroke="#1f6fe8" stroke-width="3" stroke-linecap="round"/><line x1="43" y1="24" x2="43" y2="31" stroke="#ff6b8f" stroke-width="3" stroke-linecap="round"/><path d="M8,24 Q20,8 32,24 T56,24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M8,24 Q20,40 32,24 T56,24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".85"/></svg>
+      <svg id="flow" class="flow" viewBox="0 0 600 170" role="img" aria-label="Information flowing along a DNA helix: DNA, RNA, protein and AI"></svg>
     </div>
   </div>
 </footer>
@@ -621,6 +621,35 @@ function evo(){
   el('path',{d:'M58,200 L62,150 M70,200 L66,150 M62,150 L52,118 M66,150 L76,118 M64,150 L64,112',stroke:css('--tower'),'stroke-width':2.5,fill:'none','stroke-linecap':'round'},s);
 }
 
+/* ---------- Footer: information flowing along DNA ---------- */
+let flowRaf=0;
+function flow(){
+  const s=document.getElementById('flow'); if(!s) return; s.innerHTML=''; if(flowRaf) cancelAnimationFrame(flowRaf);
+  const W=600,H=170,cy=92,A=34,k=2*Math.PI/150;
+  const defs=el('defs',{},s);
+  const g=el('linearGradient',{id:'gFlow',x1:0,y1:0,x2:1,y2:0},defs);
+  el('stop',{offset:0,'stop-color':css('--orange')},g); el('stop',{offset:.5,'stop-color':css('--violet')},g); el('stop',{offset:1,'stop-color':css('--blue')},g);
+  const glow=el('filter',{id:'gl',x:'-50%',y:'-50%',width:'200%',height:'200%'},defs); el('feGaussianBlur',{stdDeviation:3},glow);
+  // omics layers (faint bands)
+  const labels=['DNA','RNA','protein','AI'];
+  labels.forEach((t,i)=>{ const y=28+i*38; el('line',{x1:0,y1:y,x2:W,y2:y,stroke:css('--line'),'stroke-width':1},s);
+    el('text',{x:W-4,y:y-4,'text-anchor':'end','font-family':'Plus Jakarta Sans,sans-serif','font-weight':800,'font-size':10,'letter-spacing':'.12em',fill:css('--muted'),opacity:.8},s).textContent=t.toUpperCase(); });
+  const rungs=el('g',{},s), sA=el('path',{fill:'none',stroke:'url(#gFlow)','stroke-width':3.5,'stroke-linecap':'round'},s), sB=el('path',{fill:'none',stroke:'url(#gFlow)','stroke-width':3.5,'stroke-linecap':'round',opacity:.55},s);
+  const base=[css('--gold'),css('--mint'),css('--coral'),css('--sky')];
+  const rungEls=[]; for(let x=12;x<W;x+=22){ const l=el('line',{'stroke-width':3,'stroke-linecap':'round',stroke:base[(x/22|0)%4]},rungs); rungEls.push([x,l]); }
+  const N=9, parts=[]; for(let i=0;i<N;i++){ const c=el('circle',{r:4,fill:'#fff',filter:'url(#gl)'},s); const d=el('circle',{r:2.2,fill:i%2?css('--gold'):css('--sky')},s); parts.push({x:(i/N)*W,strand:i%2,c,d,sp:1.4+(i%3)*.5}); }
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let t=0;
+  function frame(){
+    let dA='',dB='';
+    for(let x=0;x<=W;x+=5){ const o=Math.sin(x*k+t)*A; dA+=(x?'L':'M')+x+','+(cy+o)+' '; dB+=(x?'L':'M')+x+','+(cy-o)+' '; }
+    sA.setAttribute('d',dA); sB.setAttribute('d',dB);
+    rungEls.forEach(([x,l])=>{ const o=Math.sin(x*k+t)*A; l.setAttribute('x1',x); l.setAttribute('x2',x); l.setAttribute('y1',cy+o); l.setAttribute('y2',cy-o); l.setAttribute('opacity',.35+.65*Math.abs(Math.cos(x*k+t))); });
+    parts.forEach(p=>{ p.x+=p.sp; if(p.x>W+10) p.x=-10; const o=Math.sin(p.x*k+t)*A; const y=p.strand?cy-o:cy+o; [p.c,p.d].forEach(e=>{e.setAttribute('cx',p.x);e.setAttribute('cy',y);}); });
+    if(!reduce){ t+=0.025; flowRaf=requestAnimationFrame(frame); }
+  }
+  frame();
+}
 /* ---------- Publications ---------- */
 const THEMES={brain:['Developing Brain','--mint'],pregnancy:['Pregnancy','--coral'],cancer:['Cancer','--violet'],heart:['Heart','--orange'],ai:['AI for Genomes','--blue'],evolution:['Evolution','--gold'],genome:['Genome Science','--sky']};
 const P=[
@@ -731,7 +760,7 @@ function wwd(){
   const w=document.getElementById("wells"); if(w){ w.innerHTML=""; const cols=[css("--orange"),css("--gold"),css("--mint"),css("--blue"),css("--coral"),css("--violet")]; for(let r=0;r<6;r++)for(let c=0;c<10;c++){ const on=(r*7+c*3)%5!==0; el("circle",{cx:44+c*18,cy:60+r*20,r:6,fill:on?cols[(r+c)%6]:"#e6ecf7",opacity:on?.95:1},w);} }
   const n=document.getElementById("net"); if(n){ n.innerHTML=""; const L=[[60,[60,110,160]],[150,[40,80,120,160]],[240,[60,110,160]],[330,[85,135]]]; const cols=[css("--blue"),css("--violet"),css("--mint"),css("--orange")]; for(let i=0;i<L.length-1;i++)L[i][1].forEach(y1=>L[i+1][1].forEach(y2=>el("line",{x1:L[i][0],y1,x2:L[i+1][0],y2,stroke:css("--blue"),"stroke-width":1.3,opacity:.35},n))); L.forEach((l,i)=>l[1].forEach(y=>{el("circle",{cx:l[0],cy:y,r:9,fill:cols[i]},n);el("circle",{cx:l[0],cy:y,r:3,fill:"#fff"},n);})); }
 }
-function drawAll(){ hero(); wwd(); brain(); preg(); ai(); heart(); cancer(); evo(); renderFilters(); renderPubs(); }
+function drawAll(){ hero(); flow(); wwd(); brain(); preg(); ai(); heart(); cancer(); evo(); renderFilters(); renderPubs(); }
 document.fonts&&document.fonts.ready.then(drawAll).catch(drawAll); if(!document.fonts) drawAll();
 const mq=matchMedia('(prefers-color-scheme: dark)'); mq.addEventListener&&mq.addEventListener('change',drawAll);
 new MutationObserver(drawAll).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
