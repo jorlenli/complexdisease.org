@@ -200,9 +200,9 @@ footer a:hover{text-decoration:underline}
       <div class="sec-head">
         <div class="eyebrow">What we do</div>
         <h2>One loop, from bench to model and back.</h2>
-        <p class="lede">Tissue goes in at the bench, comes back as a hypothesis. Two lines, one loop.</p>
+        <p class="lede">Four omics lines carry tissue into the atlas. Two model lines carry predictions back to the bench, and on to the clinic.</p>
       </div>
-      <div class="loopwrap"><canvas id="loopcv" width="1180" height="420" role="img" aria-label="One loop: tissue is dissociated into cells, cells become an atlas, the atlas trains a model, the model predicts risk and targets, and predictions return to the bench"></canvas></div>
+      <div class="loopwrap"><canvas id="loopcv" width="1180" height="480" role="img" aria-label="One loop: tissue is dissociated into cells, cells become an atlas, the atlas trains a model, the model predicts risk and targets, and predictions return to the bench"></canvas></div>
           </div>
   </section>
 
@@ -638,59 +638,64 @@ function walk(){
 let loopRaf=0;
 function loopAnim(){
   const cv=document.getElementById('loopcv'); if(!cv) return; if(loopRaf) cancelAnimationFrame(loopRaf);
-  const W=1180,H=420, dpr=Math.min(2,window.devicePixelRatio||1); cv.width=W*dpr; cv.height=H*dpr; const ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+  const W=1180,H=480, dpr=Math.min(2,window.devicePixelRatio||1); cv.width=W*dpr; cv.height=H*dpr; const ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
   const dark=(matchMedia('(prefers-color-scheme: dark)').matches&&document.documentElement.dataset.theme!=='light')||document.documentElement.dataset.theme==='dark';
-  const C={fg:css('--fg'),muted:css('--muted'),surface:css('--surface'),line:css('--line'),orange:css('--orange'),blue:css('--blue')};
-  // rounded-rectangle loop, sampled for arc-length (clockwise from the left interchange)
-  const x0=170,x1=1010,y0=118,y1=302,R=92;
-  const PT=[],S=[]; let len=0;
-  const push=(x,y)=>{ if(PT.length){ const p=PT[PT.length-1]; len+=Math.hypot(x-p[0],y-p[1]); } PT.push([x,y]); S.push(len); };
-  const cx=(x0+x1)/2, cy=(y0+y1)/2;
-  push(x0,cy); // left interchange (west side), heading up
-  const arc=(ax,ay,a0,a1)=>{ for(let i=1;i<=40;i++){ const a=a0+(a1-a0)*i/40; push(ax+R*Math.cos(a),ay+R*Math.sin(a)); } };
-  push(x0,y0+R); arc(x0+R,y0+R,Math.PI,Math.PI*1.5); push(x1-R,y0); arc(x1-R,y0+R,Math.PI*1.5,Math.PI*2); push(x1,cy); push(x1,y1-R); arc(x1-R,y1-R,0,Math.PI*.5); push(x0+R,y1); arc(x0+R,y1-R,Math.PI*.5,Math.PI); push(x0,cy);
-  const at=s=>{ s=((s%len)+len)%len; let lo=0,hi=S.length-1; while(lo<hi){ const m=(lo+hi)>>1; if(S[m]<s) lo=m+1; else hi=m; } const i=Math.max(1,lo), f=(s-S[i-1])/((S[i]-S[i-1])||1); const p=PT[i-1],q=PT[i]; return [p[0]+(q[0]-p[0])*f, p[1]+(q[1]-p[1])*f, Math.atan2(q[1]-p[1],q[0]-p[0])]; };
-  const sOf=(x,y)=>{ let best=0,bd=1e9; for(let i=0;i<PT.length;i++){ const d=Math.hypot(PT[i][0]-x,PT[i][1]-y); if(d<bd){bd=d;best=i;} } return S[best]; };
-  const top=(x0+R+x1-R)/2, span=(x1-R)-(x0+R);
-  const stations=[
-    {n:'BENCH',x:x0,y:cy,hub:true,side:'w'},
-    {n:'SINGLE CELLS',x:top-span*.28,y:y0,side:'n'},{n:'MULTI-OMICS',x:top+span*.1,y:y0,side:'n'},
-    {n:'ATLAS',x:x1,y:cy,hub:true,side:'e'},
-    {n:'DEEP LEARNING',x:top+span*.1,y:y1,side:'s'},{n:'PREDICTION',x:top-span*.28,y:y1,side:'s'}
-  ].map(st=>Object.assign(st,{s:sOf(st.x,st.y)}));
-  stations.sort((a,b)=>a.s-b.s);
-  const halfS=sOf(x1,cy);
+  const C={fg:css('--fg'),muted:css('--muted'),surface:css('--surface'),line:css('--line'),orange:css('--orange'),gold:css('--gold'),coral:css('--coral'),mint:css('--mint'),blue:css('--blue'),violet:css('--violet'),sky:css('--sky')};
+  const BENCH=[150,232], ATLAS=[1030,232], TOP=132, BOT=332;
+  const topTrunk=[BENCH,[250,TOP],[930,TOP],ATLAS], botTrunk=[ATLAS,[930,BOT],[250,BOT],BENCH];
+  // offset a polyline by d (left normal), then round its corners and sample it for arc-length lookup
+  function offset(pts,d){ const segs=[]; for(let i=0;i<pts.length-1;i++){ const [x1,y1]=pts[i],[x2,y2]=pts[i+1]; const L=Math.hypot(x2-x1,y2-y1), nx=-(y2-y1)/L, ny=(x2-x1)/L; segs.push([[x1+nx*d,y1+ny*d],[x2+nx*d,y2+ny*d]]); }
+    const out=[segs[0][0]]; for(let i=0;i<segs.length-1;i++){ const [a,b]=segs[i],[c,e]=segs[i+1]; const den=(a[0]-b[0])*(c[1]-e[1])-(a[1]-b[1])*(c[0]-e[0]); if(Math.abs(den)<1e-6){ out.push(b); continue; } const t=((a[0]-c[0])*(c[1]-e[1])-(a[1]-c[1])*(c[0]-e[0]))/den; out.push([a[0]+t*(b[0]-a[0]),a[1]+t*(b[1]-a[1])]); } out.push(segs[segs.length-1][1]); return out; }
+  function route(pts,r=26){ const PT=[],S=[]; let len=0; const push=(x,y)=>{ if(PT.length){ const p=PT[PT.length-1]; len+=Math.hypot(x-p[0],y-p[1]); } PT.push([x,y]); S.push(len); };
+    push(pts[0][0],pts[0][1]);
+    for(let i=1;i<pts.length-1;i++){ const p=pts[i-1],c=pts[i],n=pts[i+1]; const d1=Math.hypot(c[0]-p[0],c[1]-p[1]), d2=Math.hypot(n[0]-c[0],n[1]-c[1]); const rr=Math.min(r,d1/2,d2/2); const a=[c[0]+(p[0]-c[0])/d1*rr,c[1]+(p[1]-c[1])/d1*rr], b=[c[0]+(n[0]-c[0])/d2*rr,c[1]+(n[1]-c[1])/d2*rr]; push(a[0],a[1]); for(let k=1;k<=12;k++){ const t=k/12,u=1-t; push(u*u*a[0]+2*u*t*c[0]+t*t*b[0], u*u*a[1]+2*u*t*c[1]+t*t*b[1]); } }
+    const e=pts[pts.length-1]; push(e[0],e[1]);
+    const at=s=>{ s=Math.max(0,Math.min(len,s)); let lo=0,hi=S.length-1; while(lo<hi){ const m=(lo+hi)>>1; if(S[m]<s) lo=m+1; else hi=m; } const i=Math.max(1,lo), f=(s-S[i-1])/((S[i]-S[i-1])||1); const p=PT[i-1],q=PT[i]; return [p[0]+(q[0]-p[0])*f, p[1]+(q[1]-p[1])*f, Math.atan2(q[1]-p[1],q[0]-p[0])]; };
+    const sNear=(x,y)=>{ let b=0,bd=1e9; PT.forEach((p,i)=>{ const d=Math.hypot(p[0]-x,p[1]-y); if(d<bd){bd=d;b=i;} }); return S[b]; };
+    return {PT,len,at,sNear}; }
+  const dataLines=[['TRANSCRIPTOME',C.orange,-18],['EPIGENOME',C.gold,-6],['PROTEOME',C.coral,6],['SPATIAL',C.mint,18]].map(([n,c,d])=>({n,c,r:route(offset(topTrunk,d))}));
+  const modelLines=[['DEEP LEARNING',C.blue,-7],['EVOLUTION',C.violet,7]].map(([n,c,d])=>({n,c,r:route(offset(botTrunk,d))}));
+  // the Evolution line forks off the bottom trunk to a terminus at the clinic
+  const vio=offset(botTrunk,7); const forkY=vio[1][1]; const fork=route([ATLAS,[930,forkY],[560,forkY],[640,forkY+80],[730,forkY+80]]);
+  const CLINIC=fork.PT[fork.PT.length-1];
+  const topStops=[[420,'SINGLE CELLS'],[590,'SEQUENCING'],[760,'IMAGING']], botStops=[[760,'DEEP LEARNING'],[590,'PREDICTION'],[420,'TARGETS']];
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  // train state: travel between stations with ease, dwell at each
-  let idx=0, prog=1, dwell=70, t=0;
   const easeIO=u=>u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
-  function trainPos(){ const a=stations[idx].s, b=stations[(idx+1)%stations.length].s; const d=((b-a)%len+len)%len; return a+d*easeIO(prog); }
-  function label(st){ ctx.font=(st.hub?'800 12px':'700 11px')+' "Plus Jakarta Sans",sans-serif'; ctx.fillStyle=st.hub?C.fg:C.muted; ctx.letterSpacing='1.5px'; ctx.textBaseline='middle';
-    if(st.side==='n'){ ctx.textAlign='center'; ctx.fillText(st.n,st.x,st.y-26); } else if(st.side==='s'){ ctx.textAlign='center'; ctx.fillText(st.n,st.x,st.y+26); }
-    else if(st.side==='w'){ ctx.textAlign='right'; ctx.fillText(st.n,st.x-24,st.y); } else { ctx.textAlign='left'; ctx.fillText(st.n,st.x+24,st.y); } }
-  function car(x,y,ang,front,back){ ctx.save(); ctx.translate(x,y); ctx.rotate(ang); const L=50,Hh=18;
-    ctx.beginPath(); ctx.roundRect(-L/2,-Hh/2,L,Hh,[front?8:3,front?8:3,back?8:3,back?8:3]); ctx.fillStyle=dark?'#dfe6f5':'#f3f6fc'; ctx.fill(); ctx.strokeStyle=dark?'#9fb0d8':'#9aa9c9'; ctx.lineWidth=1.2; ctx.stroke();
-    ctx.beginPath(); ctx.roundRect(-L/2+5,-3.5,L-10,7,2); ctx.fillStyle=C.blue; ctx.fill(); // window band
-    for(let i=-L/2+9;i<L/2-8;i+=9){ ctx.fillStyle='rgba(255,255,255,.55)'; ctx.fillRect(i,-2.5,6,5); }
+  // trains shuttle between the ends of their line, stopping at every station
+  function mkTrain(r,stopsX,col,phase){ const stops=[130,...stopsX.map(x=>r.sNear(x,r.PT[Math.floor(r.PT.length/2)][1])).sort((a,b)=>a-b),r.len-130]; return {r,stops,col,i:phase%(stops.length-1),dir:1,prog:0,dwell:20+phase*17}; }
+  const trains=[ mkTrain(dataLines[0].r,topStops.map(s=>s[0]),C.orange,0), mkTrain(modelLines[0].r,botStops.map(s=>s[0]),C.blue,2), {r:fork,stops:[130,fork.sNear(760,forkY),fork.len],col:C.violet,i:0,dir:1,prog:.4,dwell:0} ];
+  function tick(tr){ if(tr.prog<1){ tr.prog+=0.011; if(tr.prog>=1){ tr.prog=1; tr.dwell=60; } } else if(tr.dwell>0) tr.dwell--; else { const n=tr.i+tr.dir; if(n<0||n>=tr.stops.length-1){ tr.dir*=-1; tr.dwell=30; } else { tr.i=n; } tr.prog=0; } }
+  function trainS(tr){ const a=tr.stops[tr.i], b=tr.stops[tr.i+1]; return tr.dir>0? a+(b-a)*easeIO(tr.prog) : b-(b-a)*easeIO(tr.prog); }
+  function car(x,y,ang,col,front,back){ ctx.save(); ctx.translate(x,y); ctx.rotate(ang); const L=48,Hh=18;
+    ctx.beginPath(); ctx.roundRect(-L/2,-Hh/2,L,Hh,[front?8:3,front?8:3,back?8:3,back?8:3]); ctx.fillStyle=dark?'#e3e9f6':'#f6f8fd'; ctx.fill(); ctx.strokeStyle=dark?'#8d9fcb':'#8f9fc2'; ctx.lineWidth=1.2; ctx.stroke();
+    ctx.beginPath(); ctx.roundRect(-L/2+5,-3.5,L-10,7,2); ctx.fillStyle=col; ctx.fill();
+    for(let i=-L/2+9;i<L/2-8;i+=9){ ctx.fillStyle='rgba(255,255,255,.6)'; ctx.fillRect(i,-2.5,6,5); }
     if(front){ ctx.beginPath(); ctx.arc(L/2-3,0,2.2,0,Math.PI*2); ctx.fillStyle='#ffe9a8'; ctx.fill(); }
     ctx.restore(); }
+  function stroke(r,col,w){ ctx.beginPath(); r.PT.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1])); ctx.strokeStyle=col; ctx.lineWidth=w; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.stroke(); }
+  function txt(s,x,y,size,col,align,sp){ ctx.font='800 '+size+'px "Plus Jakarta Sans",sans-serif'; ctx.fillStyle=col; ctx.textAlign=align||'center'; ctx.textBaseline='middle'; ctx.letterSpacing=sp||'1.5px'; ctx.fillText(s,x,y); }
+  function capsule(x,y,h,w){ ctx.beginPath(); ctx.roundRect(x-w/2,y-h/2,w,h,w/2); ctx.fillStyle=C.surface; ctx.fill(); ctx.strokeStyle=C.fg; ctx.lineWidth=2.2; ctx.stroke(); }
+  function hub(p){ ctx.beginPath(); ctx.arc(p[0],p[1],14,0,Math.PI*2); ctx.fillStyle=C.surface; ctx.fill(); ctx.strokeStyle=C.fg; ctx.lineWidth=4; ctx.stroke(); ctx.beginPath(); ctx.arc(p[0],p[1],5,0,Math.PI*2); ctx.fillStyle=C.fg; ctx.fill(); }
   function frame(){
     ctx.clearRect(0,0,W,H);
-    // the two lines: Data line (orange) over the top half, Model line (blue) over the bottom half
-    const seg=(a,b,col)=>{ ctx.beginPath(); for(let s=a;s<=b;s+=4){ const [x,y]=at(s); s===a?ctx.moveTo(x,y):ctx.lineTo(x,y);} const [x,y]=at(b); ctx.lineTo(x,y); ctx.strokeStyle=col; ctx.lineWidth=10; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.stroke(); };
-    seg(0,halfS,C.orange); seg(halfS,len,C.blue);
-    // legend
-    ctx.font='800 11px "Plus Jakarta Sans",sans-serif'; ctx.letterSpacing='2px'; ctx.textBaseline='middle'; ctx.textAlign='left';
-    ctx.textAlign='center'; [[C.orange,'DATA LINE  ·  WE PRODUCE THE DATA',cy-30],[C.blue,'MODEL LINE  ·  WE BUILD THE MODELS',cy+30]].forEach(l=>{ ctx.fillStyle=l[0]; ctx.globalAlpha=.9; ctx.fillText(l[1],cx,l[2]); ctx.globalAlpha=1; });
+    // the bay
+    ctx.beginPath(); ctx.moveTo(300,185); ctx.bezierCurveTo(420,150,620,165,760,170); ctx.bezierCurveTo(900,175,960,215,930,265); ctx.bezierCurveTo(900,305,700,300,560,305); ctx.bezierCurveTo(430,310,330,300,290,260); ctx.bezierCurveTo(265,235,270,200,300,185); ctx.closePath(); ctx.fillStyle=C.sky; ctx.globalAlpha=dark?.14:.22; ctx.fill(); ctx.globalAlpha=1;
+    // lines
+    dataLines.forEach(l=>stroke(l.r,l.c,9)); modelLines.forEach(l=>stroke(l.r,l.c,9)); stroke(fork,C.violet,9);
     // stations
-    stations.forEach(st=>{ const col=st.y===y0?C.orange:(st.y===y1?C.blue:null);
-      ctx.beginPath(); ctx.arc(st.x,st.y,st.hub?11:7,0,Math.PI*2); ctx.fillStyle=C.surface; ctx.fill(); ctx.lineWidth=st.hub?4:3.5; ctx.strokeStyle=st.hub?C.fg:col; ctx.stroke();
-      if(st.hub){ ctx.beginPath(); ctx.arc(st.x,st.y,4,0,Math.PI*2); ctx.fillStyle=C.fg; ctx.fill(); }
-      label(st); });
-    // train (three cars following the curve)
-    const s=trainPos(); const dir=1;
-    for(let i=2;i>=0;i--){ const [x,y,ang]=at(s-i*54); car(x,y,ang,i===0,i===2); }
-    if(!reduce){ if(prog<1){ prog+=0.009; if(prog>=1){ prog=1; dwell=55; } } else if(dwell>0){ dwell--; } else { idx=(idx+1)%stations.length; prog=0; } t+=0.016; loopRaf=requestAnimationFrame(frame); }
+    topStops.forEach(([x,n])=>{ capsule(x,TOP,52,15); txt(n,x,TOP-40,11,C.muted); });
+    botStops.forEach(([x,n])=>{ capsule(x,BOT,30,15); txt(n,x,BOT+32,11,C.muted); });
+    ctx.beginPath(); ctx.arc(CLINIC[0],CLINIC[1],8,0,Math.PI*2); ctx.fillStyle=C.surface; ctx.fill(); ctx.strokeStyle=C.violet; ctx.lineWidth=3.5; ctx.stroke(); txt('CLINIC',CLINIC[0]+18,CLINIC[1],11,C.muted,'left');
+    hub(BENCH); hub(ATLAS);
+    txt('BENCH',BENCH[0]-30,BENCH[1]-7,13,C.fg,'right'); txt('UCSF',BENCH[0]-30,BENCH[1]+10,9,C.muted,'right','2px');
+    txt('ATLAS',ATLAS[0]+30,ATLAS[1]-7,13,C.fg,'left'); txt('COSMOS',ATLAS[0]+30,ATLAS[1]+10,9,C.muted,'left','2px');
+    // legend, on the bay
+    const leg=(x,y,title,items)=>{ txt(title,x,y,10,C.muted,'left','2.5px'); items.forEach((l,i)=>{ const yy=y+22+i*19; ctx.beginPath(); ctx.roundRect(x,yy-3.5,26,7,3.5); ctx.fillStyle=l.c; ctx.fill(); txt(l.n+(l.sub?'  ·  '+l.sub:''),x+36,yy,10.5,C.fg,'left','1px'); }); };
+    leg(345,192,'DATA LINES  ·  WE PRODUCE THE DATA',dataLines);
+    leg(650,192,'MODEL LINES  ·  WE BUILD THE MODELS',modelLines);
+    // trains
+    trains.forEach(tr=>{ const s=trainS(tr); for(let i=2;i>=0;i--){ const [x,y,a]=tr.r.at(s-tr.dir*i*52); car(x,y,tr.dir>0?a:a+Math.PI,tr.col,i===0,i===2); } if(!reduce) tick(tr); });
+    if(!reduce) loopRaf=requestAnimationFrame(frame);
   }
   frame();
 }
