@@ -41,12 +41,14 @@ h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.05}
 .brand .mark{width:72px;height:72px;flex:none}
 .brand .bt{display:flex;flex-direction:column;justify-content:space-between;height:72px;line-height:.92;padding-block:2px}
 .brand .bt b,.brand .bt small{font-size:2.1rem;font-weight:800;letter-spacing:-.02em;color:transparent;background:linear-gradient(180deg,var(--steelA),var(--steelB));-webkit-background-clip:text;background-clip:text}
+.links{gap:6px}
+@media (max-width:900px){ .links a{font-size:1rem;padding:8px 10px} }
 @media (max-width:700px){ .brand .mark{width:52px;height:52px} .brand .bt{height:52px} .brand .bt b,.brand .bt small{font-size:1.45rem} }
 footer .walk{width:min(100%,600px);height:auto;display:block}
 footer .ext{flex-direction:column;align-items:flex-end;gap:14px;flex:1 1 420px;max-width:600px}
 footer .ext .row{display:flex;gap:14px;flex-wrap:wrap;justify-content:flex-end}
 .links{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
-.links a{text-decoration:none;font-weight:600;font-size:.9rem;padding:8px 12px;border-radius:999px;color:var(--muted)}
+.links a{text-decoration:none;font-weight:700;font-size:1.2rem;padding:10px 16px;border-radius:999px;color:var(--muted)}
 .links a:hover,.links a:focus-visible{background:var(--surface);color:var(--fg);outline:none;box-shadow:0 0 0 2px var(--line)}
 
 /* hero */
