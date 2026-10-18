@@ -663,7 +663,7 @@ function loopAnim(){
   const easeIO=u=>u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
   // trains shuttle between the ends of their line, stopping at every station
   function mkTrain(r,stopsX,col,phase){ const stops=[130,...stopsX.map(x=>r.sNear(x,r.PT[Math.floor(r.PT.length/2)][1])).sort((a,b)=>a-b),r.len-130]; return {r,stops,col,i:phase%(stops.length-1),dir:1,prog:0,dwell:20+phase*17}; }
-  const trains=[ mkTrain(dataLines[0].r,topStops.map(s=>s[0]),C.orange,0), mkTrain(modelLines[0].r,botStops.map(s=>s[0]),C.blue,2), {r:fork,stops:[130,fork.sNear(760,forkY),fork.len],col:C.violet,i:0,dir:1,prog:.4,dwell:0} ];
+  const trains=[ mkTrain(dataLines[0].r,topStops.map(s=>s[0]),C.orange,0), mkTrain(modelLines[0].r,botStops.map(s=>s[0]),C.blue,2), {r:fork,stops:[130,fork.sNear(760,forkY),fork.len-34],col:C.violet,i:0,dir:1,prog:.4,dwell:0} ];
   function tick(tr){ if(tr.prog<1){ tr.prog+=0.011; if(tr.prog>=1){ tr.prog=1; tr.dwell=60; } } else if(tr.dwell>0) tr.dwell--; else { const n=tr.i+tr.dir; if(n<0||n>=tr.stops.length-1){ tr.dir*=-1; tr.dwell=30; } else { tr.i=n; } tr.prog=0; } }
   function trainS(tr){ const a=tr.stops[tr.i], b=tr.stops[tr.i+1]; return tr.dir>0? a+(b-a)*easeIO(tr.prog) : b-(b-a)*easeIO(tr.prog); }
   function car(x,y,ang,col,front,back){ ctx.save(); ctx.translate(x,y); ctx.rotate(ang); const L=48,Hh=18;
@@ -685,7 +685,7 @@ function loopAnim(){
     // stations
     topStops.forEach(([x,n])=>{ capsule(x,TOP,52,15); txt(n,x,TOP-40,11,C.muted); });
     botStops.forEach(([x,n])=>{ capsule(x,BOT,30,15); txt(n,x,BOT+32,11,C.muted); });
-    ctx.beginPath(); ctx.arc(CLINIC[0],CLINIC[1],8,0,Math.PI*2); ctx.fillStyle=C.surface; ctx.fill(); ctx.strokeStyle=C.violet; ctx.lineWidth=3.5; ctx.stroke(); txt('CLINIC',CLINIC[0]+18,CLINIC[1],11,C.muted,'left');
+    ctx.beginPath(); ctx.arc(CLINIC[0],CLINIC[1],8,0,Math.PI*2); ctx.fillStyle=C.surface; ctx.fill(); ctx.strokeStyle=C.violet; ctx.lineWidth=3.5; ctx.stroke(); txt('CLINIC',CLINIC[0]+22,CLINIC[1],11,C.muted,'left');
     hub(BENCH); hub(ATLAS);
     txt('BENCH',BENCH[0]-30,BENCH[1]-7,13,C.fg,'right'); txt('UCSF',BENCH[0]-30,BENCH[1]+10,9,C.muted,'right','2px');
     txt('ATLAS',ATLAS[0]+30,ATLAS[1]-7,13,C.fg,'left'); txt('COSMOS',ATLAS[0]+30,ATLAS[1]+10,9,C.muted,'left','2px');
