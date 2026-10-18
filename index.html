@@ -37,7 +37,7 @@ h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.05}
 .nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;backdrop-filter:blur(14px);background:color-mix(in srgb,var(--bg) 78%,transparent);border-bottom:1px solid var(--line)}
 .nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:12px}
 .brand{white-space:nowrap;display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:800;font-size:1.1rem;text-decoration:none;letter-spacing:-.01em}
-.brand .mark{width:30px;height:30px;flex:none}
+.brand .mark{width:32px;height:32px;flex:none;color:var(--fg)}
 footer .lock{display:flex;align-items:flex-start;gap:16px}
 footer .lock .mark{width:46px;height:46px;flex:none;color:var(--fg)}
 footer .walk{width:min(100%,600px);height:auto;display:block}
@@ -173,7 +173,7 @@ footer a:hover{text-decoration:underline}
 
 <header class="nav">
   <div class="wrap">
-    <a class="brand" href="#top"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><path d="M15 11 V49 H37" fill="none" stroke="var(--orange)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><path d="M49 30 V49" fill="none" stroke="var(--blue)" stroke-width="9" stroke-linecap="round"/><circle cx="49" cy="14" r="6.5" fill="var(--surface)" stroke="currentColor" stroke-width="3.2"/></svg>Li Lab · UCSF</a>
+    <a class="brand" href="#top"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><path d="M7 32 Q32 2 57 32" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/><path d="M7 32 Q32 62 57 32" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/><circle cx="32.00" cy="21.80" r="2.6" fill="var(--orange)"/><circle cx="37.10" cy="23.17" r="2.6" fill="var(--gold)"/><circle cx="40.83" cy="26.90" r="2.6" fill="var(--mint)"/><circle cx="42.20" cy="32.00" r="2.6" fill="var(--blue)"/><circle cx="40.83" cy="37.10" r="2.6" fill="var(--coral)"/><circle cx="37.10" cy="40.83" r="2.6" fill="var(--violet)"/><circle cx="32.00" cy="42.20" r="2.6" fill="var(--orange)"/><circle cx="26.90" cy="40.83" r="2.6" fill="var(--gold)"/><circle cx="23.17" cy="37.10" r="2.6" fill="var(--mint)"/><circle cx="21.80" cy="32.00" r="2.6" fill="var(--blue)"/><circle cx="23.17" cy="26.90" r="2.6" fill="var(--coral)"/><circle cx="26.90" cy="23.17" r="2.6" fill="var(--violet)"/><circle cx="32" cy="32" r="5" fill="currentColor"/></svg>Li Lab · UCSF</a>
     <nav class="links">
       <a href="#research">Research</a>
       <a href="#atlas">Atlas</a>
@@ -362,7 +362,7 @@ footer a:hover{text-decoration:underline}
 
 <footer>
   <div class="wrap">
-    <div class="lock"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><path d="M15 11 V49 H37" fill="none" stroke="var(--orange)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><path d="M49 30 V49" fill="none" stroke="var(--blue)" stroke-width="9" stroke-linecap="round"/><circle cx="49" cy="14" r="6.5" fill="var(--surface)" stroke="currentColor" stroke-width="3.2"/></svg><div>
+    <div class="lock"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><path d="M7 32 Q32 2 57 32" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/><path d="M7 32 Q32 62 57 32" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/><circle cx="32.00" cy="21.80" r="2.6" fill="var(--orange)"/><circle cx="37.10" cy="23.17" r="2.6" fill="var(--gold)"/><circle cx="40.83" cy="26.90" r="2.6" fill="var(--mint)"/><circle cx="42.20" cy="32.00" r="2.6" fill="var(--blue)"/><circle cx="40.83" cy="37.10" r="2.6" fill="var(--coral)"/><circle cx="37.10" cy="40.83" r="2.6" fill="var(--violet)"/><circle cx="32.00" cy="42.20" r="2.6" fill="var(--orange)"/><circle cx="26.90" cy="40.83" r="2.6" fill="var(--gold)"/><circle cx="23.17" cy="37.10" r="2.6" fill="var(--mint)"/><circle cx="21.80" cy="32.00" r="2.6" fill="var(--blue)"/><circle cx="23.17" cy="26.90" r="2.6" fill="var(--coral)"/><circle cx="26.90" cy="23.17" r="2.6" fill="var(--violet)"/><circle cx="32" cy="32" r="5" fill="currentColor"/></svg><div>
       <b style="color:var(--fg)">Laboratory of Complex Diseases</b><br>
       Eli and Edythe Broad Center of Regeneration Medicine and Stem Cell Research<br>
       University of California, San Francisco<br>
