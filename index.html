@@ -36,7 +36,10 @@ h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.05}
 .nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;backdrop-filter:blur(14px);background:color-mix(in srgb,var(--bg) 78%,transparent);border-bottom:1px solid var(--line)}
 .nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:12px}
 .brand{white-space:nowrap;display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:800;font-size:1.1rem;text-decoration:none;letter-spacing:-.01em}
-.brand .dot{width:28px;height:28px;border-radius:50%;background:conic-gradient(from 200deg,var(--orange),var(--gold),var(--mint),var(--blue),var(--orange))}
+.brand .mark{width:30px;height:30px;border-radius:8px}
+footer .mark{width:56px;height:56px}
+footer .ext{flex-direction:column;align-items:flex-end;gap:22px}
+footer .ext .row{display:flex;gap:14px;flex-wrap:wrap;justify-content:flex-end}
 .links{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
 .links a{text-decoration:none;font-weight:600;font-size:.9rem;padding:8px 12px;border-radius:999px;color:var(--muted)}
 .links a:hover,.links a:focus-visible{background:var(--surface);color:var(--fg);outline:none;box-shadow:0 0 0 2px var(--line)}
@@ -103,7 +106,7 @@ section{padding-block:clamp(56px,8vw,110px)}
 .person{background:var(--surface);border-radius:24px;padding:20px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;border:1px solid var(--line);min-width:0}
 .person.pi{grid-column:1/-1;flex-direction:row;text-align:left;align-items:center;gap:26px;padding:28px}
 .person.pi .ava{width:150px;height:150px;font-size:2.6rem;flex:none}
-.ava{width:112px;height:112px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:1.9rem;color:#fff;letter-spacing:-.02em;flex:none;padding:4px}
+.ava{width:112px;height:112px;border-radius:50%;display:block;overflow:hidden;font-family:var(--display);font-weight:800;font-size:1.9rem;color:#fff;letter-spacing:-.02em;flex:none;padding:4px}
 .ava img{width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:50% 18%;display:block;background:var(--surface)}
 .person h3{font-size:1.1rem;font-weight:800}
 .person .role{font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
@@ -148,7 +151,7 @@ footer a:hover{text-decoration:underline}
 
 <header class="nav">
   <div class="wrap">
-    <a class="brand" href="#top"><span class="dot"></span>Li Lab · UCSF</a>
+    <a class="brand" href="#top"><svg class="mark" viewBox="0 0 64 64" width="64" height="64" aria-hidden="true"><defs><linearGradient id="lgMark" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4532a"/><stop offset="1" stop-color="#ff8a5b"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#lgMark)"/><rect x="13" y="14" width="5" height="36" rx="1.5" fill="#fff"/><rect x="46" y="14" width="5" height="36" rx="1.5" fill="#fff"/><rect x="11" y="21" width="9" height="3" fill="#fff"/><rect x="44" y="21" width="9" height="3" fill="#fff"/><rect x="6" y="46" width="52" height="4" rx="1" fill="#fff" opacity=".9"/><line x1="21" y1="18" x2="21" y2="24" stroke="#ffc53d" stroke-width="3" stroke-linecap="round"/><line x1="21" y1="24" x2="21" y2="31" stroke="#2fd4a3" stroke-width="3" stroke-linecap="round"/><line x1="43" y1="18" x2="43" y2="24" stroke="#1f6fe8" stroke-width="3" stroke-linecap="round"/><line x1="43" y1="24" x2="43" y2="31" stroke="#ff6b8f" stroke-width="3" stroke-linecap="round"/><path d="M8,24 Q20,8 32,24 T56,24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M8,24 Q20,40 32,24 T56,24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".85"/></svg>Li Lab · UCSF</a>
     <nav class="links">
       <a href="#research">Research</a>
       <a href="#publications">Publications</a>
@@ -305,10 +308,13 @@ footer a:hover{text-decoration:underline}
       35 Medical Center Way, RMB 934H, San Francisco, CA 94143 · 415-502-2572
     </div>
     <div class="ext">
+      <div class="row">
       <a href="https://cell.ucsf.edu/snMultiome/" target="_blank" rel="noopener">Developing Brain Cell Browser</a>
       <a href="https://neurology.ucsf.edu/" target="_blank" rel="noopener">UCSF Neurology</a>
       <a href="https://stemcell.ucsf.edu/" target="_blank" rel="noopener">UCSF Regeneration Medicine</a>
       <a href="https://www.ucsf.edu/" target="_blank" rel="noopener">UCSF</a>
+      </div>
+      <svg class="mark" viewBox="0 0 64 64" width="64" height="64" aria-hidden="true"><defs><linearGradient id="lgMark" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4532a"/><stop offset="1" stop-color="#ff8a5b"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#lgMark)"/><rect x="13" y="14" width="5" height="36" rx="1.5" fill="#fff"/><rect x="46" y="14" width="5" height="36" rx="1.5" fill="#fff"/><rect x="11" y="21" width="9" height="3" fill="#fff"/><rect x="44" y="21" width="9" height="3" fill="#fff"/><rect x="6" y="46" width="52" height="4" rx="1" fill="#fff" opacity=".9"/><line x1="21" y1="18" x2="21" y2="24" stroke="#ffc53d" stroke-width="3" stroke-linecap="round"/><line x1="21" y1="24" x2="21" y2="31" stroke="#2fd4a3" stroke-width="3" stroke-linecap="round"/><line x1="43" y1="18" x2="43" y2="24" stroke="#1f6fe8" stroke-width="3" stroke-linecap="round"/><line x1="43" y1="24" x2="43" y2="31" stroke="#ff6b8f" stroke-width="3" stroke-linecap="round"/><path d="M8,24 Q20,8 32,24 T56,24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M8,24 Q20,40 32,24 T56,24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".85"/></svg>
     </div>
   </div>
 </footer>
@@ -601,8 +607,8 @@ function renderPubs(){
     pubsEl.appendChild(li);
   });
   moreBtn.hidden=list.length<=12;
-  moreBtn.textContent=showAll?'Show fewer':`Show all ${list.length} papers`;
-  countEl.textContent=`${shown.length} of ${list.length}`;
+  moreBtn.textContent=showAll?'Show fewer':'Show all papers';
+  countEl.textContent='';
 }
 moreBtn.onclick=()=>{showAll=!showAll;renderPubs(); if(!showAll) document.getElementById('publications').scrollIntoView({behavior:'smooth'})};
 
