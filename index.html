@@ -651,7 +651,7 @@ function loopAnim(){
     const at=s=>{ s=Math.max(0,Math.min(len,s)); let lo=0,hi=S.length-1; while(lo<hi){ const m=(lo+hi)>>1; if(S[m]<s) lo=m+1; else hi=m; } const i=Math.max(1,lo), f=(s-S[i-1])/((S[i]-S[i-1])||1); const p=PT[i-1],q=PT[i]; return [p[0]+(q[0]-p[0])*f, p[1]+(q[1]-p[1])*f, Math.atan2(q[1]-p[1],q[0]-p[0])]; };
     const sNear=(x,y)=>{ let b=0,bd=1e9; PT.forEach((p,i)=>{ const d=Math.hypot(p[0]-x,p[1]-y); if(d<bd){bd=d;b=i;} }); return S[b]; };
     return {PT,len,at,sNear}; }
-  const dataLines=[['TRANSCRIPTOME',C.orange,-18],['EPIGENOME',C.gold,-6],['PROTEOME',C.coral,6],['SPATIAL',C.mint,18]].map(([n,c,d])=>({n,c,r:route(offset(topTrunk,d))}));
+  const dataLines=[['EPIGENOME',C.gold,-18],['TRANSCRIPTOME',C.orange,-6],['PROTEOME',C.coral,6],['SPATIAL',C.mint,18]].map(([n,c,d])=>({n,c,r:route(offset(topTrunk,d))}));
   const modelLines=[['DEEP LEARNING',C.blue,-7],['EVOLUTION',C.violet,7]].map(([n,c,d])=>({n,c,r:route(offset(botTrunk,d))}));
   // the Evolution line forks off the bottom trunk to a terminus at the clinic
   const vio=offset(botTrunk,7); const forkY=vio[1][1]; const fork=route([ATLAS,[930,forkY],[560,forkY],[640,forkY+80],[730,forkY+80]]);
@@ -661,7 +661,7 @@ function loopAnim(){
   const easeIO=u=>u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
   // trains shuttle between the ends of their line, stopping at every station
   function mkTrain(r,stopsX,col,phase){ const stops=[130,...stopsX.map(x=>r.sNear(x,r.PT[Math.floor(r.PT.length/2)][1])).sort((a,b)=>a-b),r.len-130]; return {r,stops,col,i:phase%(stops.length-1),dir:1,prog:0,dwell:20+phase*17}; }
-  const trains=[ mkTrain(dataLines[0].r,topStops.map(s=>s[0]),C.orange,0), mkTrain(modelLines[0].r,botStops.map(s=>s[0]),C.blue,2), {r:fork,stops:[130,fork.sNear(760,forkY),fork.len-34],col:C.violet,i:0,dir:1,prog:.4,dwell:0} ];
+  const trains=[ mkTrain(dataLines[1].r,topStops.map(s=>s[0]),C.orange,0), mkTrain(modelLines[0].r,botStops.map(s=>s[0]),C.blue,2), {r:fork,stops:[130,fork.sNear(760,forkY),fork.len-34],col:C.violet,i:0,dir:1,prog:.4,dwell:0} ];
   function tick(tr){ if(tr.prog<1){ tr.prog+=0.011; if(tr.prog>=1){ tr.prog=1; tr.dwell=60; } } else if(tr.dwell>0) tr.dwell--; else { const n=tr.i+tr.dir; if(n<0||n>=tr.stops.length-1){ tr.dir*=-1; tr.dwell=30; } else { tr.i=n; } tr.prog=0; } }
   function trainS(tr){ const a=tr.stops[tr.i], b=tr.stops[tr.i+1]; return tr.dir>0? a+(b-a)*easeIO(tr.prog) : b-(b-a)*easeIO(tr.prog); }
   function car(x,y,ang,col,front,back){ ctx.save(); ctx.translate(x,y); ctx.rotate(ang); const L=48,Hh=18;
